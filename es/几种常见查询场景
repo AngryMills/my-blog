@@ -1,0 +1,369 @@
+es中几种常见的查询场景,使用http请求构造参数。
+
+es 中文使用手册。
+https://www.elastic.co/guide/cn/elasticsearch/guide/current/foreword_id.html
+
+1.  从最简单的查询开始
+GET /_search
+{
+   "hits" : {
+      "total" :       14,
+      "hits" : [
+        {
+          "_index":   "us",
+          "_type":    "tweet",
+          "_id":      "7",
+          "_score":   1,
+          "_source": {
+             "date":    "2014-09-17",
+             "name":    "John Smith",
+             "tweet":   "The Query DSL is really powerful and flexible",
+             "user_id": 2
+          }
+       },
+        ... 9 RESULTS REMOVED ...
+      ],
+      "max_score" :   1
+   },
+   "took" :           4,
+   "_shards" : {
+      "failed" :      0,
+      "successful" :  10,
+      "total" :       10
+   },
+   "timed_out" :      false
+}
+从官方给的例子看下这些参数的含义。
+hits 结果集
+	- _index document的属性
+	- type document的属性
+	- _id document的属性
+	- _score 对搜索的匹配性(越匹配,得分越高)
+	- _source 就是存进去的value
+took 请求花费时间
+timeout 超时时间(默认不超时,可以指定 GET /_search?timeout=10ms)
+shards 有多少个响应的分片,多少成功/失败
+之所以hits 要多返回几个document的属性，避免需要的时候再去查询。
+
+2.  稍微麻烦的查询
+sql 一般都会写，介绍一个神器
+神器：	Sql 转 Es 查询语句 
+http://www.ischoolbar.com/EsParser/
+举个例子
+sql：
+select name,number from sys_user order by create_time desc limit 10
+es query：
+{"from":0,"size":"10","sort":[{"create_time":{"order":"DESC"}}],"_source":{"include":["name","number"]}}
+如图所示：
+
+上面的例子还是太简单了，如果想做分组后求和呢。
+如图所示：
+
+3.  es数据展示
+这次模拟的是二次分组的数据情况,某个时间段的按分钟分组,获取有多少分钟,再获取这一分钟内数据的分组情况(每分钟有多少数据)。
+es sql 。uid_aggs 代表第一次分组的字段,keyword_aggs是第二次分组后的详情数据
+{
+    "aggs": {
+        "all": {
+            "terms": {
+                "field": "currentMinutes.keyword",
+                "size": 100
+            }
+        },
+        "keyword_aggs": {
+            "aggs": {
+                "top": {
+                    "top_hits": {
+                        "size": 100
+                    }
+                }
+            },
+            "terms": {
+                "field": "currentMinutes.keyword",
+                "size": 100
+            }
+        },
+        "uid_aggs": {
+            "cardinality": {
+                "precision_threshold": 120,
+                "field": "currentMinutes.keyword"
+            }
+        }
+    },
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "range": {
+                        "currentTime.keyword": {
+                            "gte": "2020-08-05 14:43",
+                            "lte": "2020-08-05 14:45"
+                        }
+                    }
+                }
+            ],
+            "must_not": [],
+            "should": []
+        }
+    },
+    "sort": [
+        {
+            "currentTime.keyword": {
+                "order": "desc"
+            }
+        }
+    ]
+}
+
+结果：
+我把返回的详细数据hits删掉了，主要看一下 aggregations 里边的内容。
+返回的参数说明：
+uid_aggs 就是请求查询传入的参数,这里返回的是,按分钟分组的数量。
+all的buckets 的key为二次分组字段,doc_coutn 为二次分组对应的数据量。
+keyword_aggs的buckets 展示了all的buckets 对应的数据详情。
+{
+  "took": 5,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 5,
+    "max_score": null,
+    "hits": [{
+        // 数据暂时删掉了...
+      }
+    ]
+  },
+  "aggregations": {
+    "all": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [{
+          "key": "2020-08-05 14:44",
+          "doc_count": 3
+        },
+        {
+          "key": "2020-08-05 14:43",
+          "doc_count": 2
+        }
+      ]
+    },
+    "uid_aggs": {
+      "value": 2
+    },
+    "keyword_aggs": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [{
+          "key": "2020-08-05 14:44",
+          "doc_count": 3,
+          "top": {
+            "hits": {
+              "total": 3,
+              "max_score": 1.0,
+              "hits": [{
+                  "_index": "apm-report-app2020-08-05",
+                  "_type": "info",
+                  "_id": "7cpdvXMBjkzeFkDgwB3t",
+                  "_score": 1.0,
+                  "_source": {
+                    "dvid": "D3B6D5FBC668B731E52BC08D9FE23EAB",
+                    "showName": "车系列表",
+                    "appVer": "10.36.0",
+                    "groupId": 3,
+                    "weight": 1,
+                    "pageId": 30001,
+                    "apiTime": 541.3210391998291,
+                    "platform": 2,
+                    "currentTime": "2020-08-05 14:44:53.292",
+                    "loadTime": 584.99908447265625,
+                    "@timestamp": "2020-08-05 14:44:53",
+                    "currentMinutes": "2020-08-05 14:44",
+                    "viewTime": 43.678998947143555,
+                    "requestId": "BD43986C-7995-4F93-84F7-B4D65E8BE5EB",
+                    "cName": "BPCSerialListRootVC"
+                  }
+                },
+                {
+                  "_index": "apm-report-app2020-08-05",
+                  "_type": "info",
+                  "_id": "7spdvXMBjkzeFkDgxh2B",
+                  "_score": 1.0,
+                  "_source": {
+                    "dvid": "D3B6D5FBC668B731E52BC08D9FE23EAB",
+                    "showName": "车型综述页",
+                    "appVer": "10.36.0",
+                    "groupId": 3,
+                    "weight": 1,
+                    "pageId": 30007,
+                    "apiTime": 456.7570686340332,
+                    "platform": 2,
+                    "currentTime": "2020-08-05 14:44:54.721",
+                    "loadTime": 720.36707401275635,
+                    "@timestamp": "2020-08-05 14:44:54",
+                    "currentMinutes": "2020-08-05 14:44",
+                    "viewTime": 263.61000537872314,
+                    "requestId": "DCE5F4A4-40AC-4EB4-BCCF-ABACCFC7FF01",
+                    "cName": "BPCOverPagesViewController"
+                  }
+                },
+                {
+                  "_index": "apm-report-app2020-08-05",
+                  "_type": "info",
+                  "_id": "78pdvXMBjkzeFkDgyB1A",
+                  "_score": 1.0,
+                  "_source": {
+                    "dvid": "D3B6D5FBC668B731E52BC08D9FE23EAB",
+                    "showName": "车型-图片列表",
+                    "appVer": "10.36.0",
+                    "groupId": 3,
+                    "weight": 1,
+                    "pageId": 30015,
+                    "apiTime": 129.27305698394775,
+                    "platform": 2,
+                    "currentTime": "2020-08-05 14:44:55.168",
+                    "loadTime": 150.16889572143555,
+                    "@timestamp": "2020-08-05 14:44:55",
+                    "currentMinutes": "2020-08-05 14:44",
+                    "viewTime": 20.89691162109375,
+                    "requestId": "A1DA2749-A56B-4AFE-BF83-ECDF82806152",
+                    "cName": "BPImageVideoViewController"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "key": "2020-08-05 14:43",
+          "doc_count": 2,
+          "top": {
+            "hits": {
+              "total": 2,
+              "max_score": 1.0,
+              "hits": [{
+                  "_index": "apm-report-app2020-08-05",
+                  "_type": "info",
+                  "_id": "7MpcvXMBjkzeFkDg2x17",
+                  "_score": 1.0,
+                  "_source": {
+                    "dvid": "D3B6D5FBC668B731E52BC08D9FE23EAB",
+                    "showName": "车型-图片列表",
+                    "appVer": "10.36.0",
+                    "groupId": 3,
+                    "weight": 1,
+                    "pageId": 30015,
+                    "apiTime": 269.10901069641113,
+                    "platform": 2,
+                    "currentTime": "2020-08-05 14:43:54.553",
+                    "loadTime": 334.06901359558105,
+                    "@timestamp": "2020-08-05 14:43:54",
+                    "currentMinutes": "2020-08-05 14:43",
+                    "viewTime": 64.961075782775879,
+                    "requestId": "E5105DA7-5914-41ED-A76E-5DF39CF38588",
+                    "cName": "BPImageVideoViewController"
+                  }
+                },
+                {
+                  "_index": "apm-report-app2020-08-05",
+                  "_type": "info",
+                  "_id": "68pcvXMBjkzeFkDg1h2t",
+                  "_score": 1.0,
+                  "_source": {
+                    "dvid": "D3B6D5FBC668B731E52BC08D9FE23EAB",
+                    "showName": "车型综述页",
+                    "appVer": "10.36.0",
+                    "groupId": 3,
+                    "weight": 1,
+                    "pageId": 30007,
+                    "apiTime": 488.01600933074951,
+                    "platform": 2,
+                    "currentTime": "2020-08-05 14:43:53.324",
+                    "loadTime": 539.05403614044189,
+                    "@timestamp": "2020-08-05 14:43:53",
+                    "currentMinutes": "2020-08-05 14:43",
+                    "viewTime": 51.03909969329834,
+                    "requestId": "B370AB84-3A6E-4C48-9DF2-4F6E1855567B",
+                    "cName": "BPCOverPagesViewController"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+4.  Java代码转换
+将写好的es json放到 resouces目录下，变量用唯一字符表示，等读取sql的时候再替换。
+读取resources下json的代码。
+/**
+ * 加载查询
+ * @param path 路径
+ * @return string
+ */
+private String getQueryJsonStr(String path) {
+    //加载json文件
+    ClassPathResource classPathResource = new ClassPathResource(path);
+    String queryJson=null;
+    try (
+        InputStream in = classPathResource.getInputStream();
+        BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
+        StringBuilder message = new StringBuilder();
+        String line = null;
+        while ((line = br.readLine()) != null) {
+            message.append(line);
+        }
+        queryJson = message.toString();
+
+    } catch (Exception e) {
+        
+    }
+
+    return queryJson;
+}
+拼装替换的map参数,这里以时间为例
+ /**
+   * es查询时间
+   * @param beginTime beginTime
+   * @param endTime endTime
+   * @return Map
+   */
+  private Map<String,String> buildEsQueryMap(String beginTime, String endTime){
+      Map<String,String> params = new HashMap<>();
+      //初始化时间
+      if (StringUtils.isEmpty(beginTime)){
+          beginTime = DateUtil.getCurrDate()+" 00:00:00";
+      }
+      if (StringUtils.isEmpty(endTime)){
+          endTime = DateUtil.getCurrTime();//当前时间
+      }
+      params.put("{beginTime}", beginTime);
+      params.put("{endTime}", endTime);
+      return params;
+  }
+遍历替换json
+for (Map.Entry<String, String> entry : params.entrySet()) {
+    queryJson=queryJson.replace(entry.getKey(), entry.getValue());
+}
+发送http请求查询,queryJson就是替换后的es查询json
+HttpHeaders headers = new HttpHeaders();
+MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
+headers.setContentType(type);
+headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+HttpEntity<String> formEntity = new HttpEntity<>(queryJson, headers);
+//查询
+result= restTemplate.postForEntity(url,formEntity,JSONObject.class).getBody();
+
+5. 总结
+es的学习成本确实有点高,文档又多又杂。更多的看官方文档吧。
+英文版：
+https://www.elastic.co/guide/en/elasticsearch/reference/current/search-search.html
+中文版：（基于 Elasticsearch 2.x 版本）
+https://www.elastic.co/guide/cn/elasticsearch/guide/current/query-dsl-intro.html

@@ -1,0 +1,7 @@
+maven 私服拉取jar包失败,没有权限。
+[ERROR] Non-resolvable import POM: Could not transfer artifact org.springframework.cloud:spring-cloud-dependencies:pom:Hoxton.SR6 from/to xxx-wp (http://maven.xxx.com/repository/WP/): Not authorized @ line 37, column 25
+[ERROR] Non-resolvable import POM: Could not transfer artifact com.alibaba.cloud:spring-cloud-alibaba-dependencies:pom:2.2.1.RELEASE from/to xxx-wp (http://maven.xxx.com/repository/WP/): Not authorized @ line 44, column 25
+
+理论上 nexus 的账号密码配置在 maven 的 setting.xml。
+出现这个问题要么账号密码错了,要么就是没有配置。
+还有一种可能就是我现在遇到的,之前允许匿名访问,现在不允许匿名了，然后也没配置账号密码。

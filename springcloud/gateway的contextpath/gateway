@@ -1,0 +1,85 @@
+关于 springcloud gateway 设置 context-path 的问题
+1.  使用场景
+由于没有申请二级域名,网关使用的地址是 xxx.com/gateway/ 用nginx转发的时候 /gateway/ 也被用来寻址。
+gateway 没办法设置 context-path ,针对我这个场景有3个解决方案。
+
+2.  解决方案
+2.1 增加本地路由(有一个网址指向自己,这里就是 /gateway)
+spring:
+  cloud:
+    gateway:
+      routes:
+      # 网关本身没有contextPath,通过自己转发自己，达到能处理contextPath
+      - id: self
+        uri: http://localhost:${server.port}
+        predicates:
+        - Path=/${spring.application.name}/**
+        filters:
+        - StripPrefix=1
+        order: -11000
+这种方式会丢失请求,暂时没考虑原因，就pass了。
+
+2.2 增加过滤器,改写路径
+ApiFilter.java
+package com.yiche.ballast.filter;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.web.server.WebFilter;
+import reactor.core.publisher.Mono;
+
+
+@Configuration
+public class ApiFilter {
+    @Value("${spring.cloud.gateway.api-prefix:/gateway}")
+    private String prefix;
+
+    @Bean
+    @Order(-1)
+    public WebFilter apiPrefixFilter() {
+        return (exchange, chain) -> {
+            ServerHttpRequest request = exchange.getRequest();
+
+            String path = request.getURI().getRawPath();
+            if (!path.contains(prefix)) {
+                ServerHttpResponse response = exchange.getResponse();
+                response.setStatusCode(HttpStatus.BAD_GATEWAY);
+
+                DataBuffer buffer = response
+                        .bufferFactory()
+                        .wrap(HttpStatus.BAD_GATEWAY.getReasonPhrase().getBytes());
+                return response.writeWith(Mono.just(buffer));
+            }
+            String newPath = path.replaceFirst(prefix, "");
+            ServerHttpRequest newRequest = request.mutate().path(newPath).build();
+
+            return chain.filter(exchange.mutate().request(newRequest).build());
+        };
+    }
+}
+这样/gateway 请求进来之后,转发到routers 的时候会把 /gateway去掉,缺点是每个请求进来都需要对路径处理一次。
+能配置的尽量不写代码。
+
+2.3 修改配置,在所有的router路径前加前缀(这里就是都加上 /gateway)
+
+spring:
+    cloud:
+        gateway:
+            routes:
+            - id: api-route
+              filters:
+                - StripPrefix=1
+              predicates:
+                - name: Path
+                  args[pattern]: /gateway/api/**
+              uri: lb://xxx-api
+
+偷懒的做法，路由多的时候也挺难受。
+
+现在路由不多，选择了第三种方式。看各自的场景选择吧。

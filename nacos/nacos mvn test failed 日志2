@@ -1,0 +1,211 @@
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (validate) @ nacos-address ---
+[INFO] 寮?濮嬫鏌モ?︹??
+妫?鏌ュ畬鎴愩??
+[INFO] You have 0 Checkstyle violations.
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.7.8:prepare-agent (default-prepare-agent) @ nacos-address ---
+[INFO] argLine set to -javaagent:D:\\dev\\rep\\org\\jacoco\\org.jacoco.agent\\0.7.8\\org.jacoco.agent-0.7.8-runtime.jar=destfile=E:\\my\\gite
+e\\nacos\\address\\target\\jacoco.exec
+[INFO]
+[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ nacos-address ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.5.1:compile (default-compile) @ nacos-address ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 10 source files to E:\my\gitee\nacos\address\target\classes
+[INFO]
+[INFO] --- maven-resources-plugin:3.0.2:testResources (default-testResources) @ nacos-address ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory E:\my\gitee\nacos\address\src\test\resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.5.1:testCompile (default-testCompile) @ nacos-address ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 3 source files to E:\my\gitee\nacos\address\target\test-classes
+[INFO]
+[INFO] --- maven-surefire-plugin:2.20:test (default-test) @ nacos-address ---
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[WARNING] Corrupted stdin stream in forked JVM 1. See the dump file E:\my\gitee\nacos\address\target\surefire-reports\2020-09-29T10-57-57_791
+-jvmRun1.dumpstream
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[ERROR] There are test failures.
+
+Please refer to E:\my\gitee\nacos\address\target\surefire-reports for the individual test results.
+Please refer to dump files (if any exist) [date]-jvmRun[N].dump, [date].dumpstream and [date]-jvmRun[N].dumpstream.
+The forked VM terminated without properly saying goodbye. VM crash or System.exit called?
+Command was cmd.exe /X /C "D:\dev\env\jdk\jdk8\jre\bin\java -javaagent:D:\\dev\\rep\\org\\jacoco\\org.jacoco.agent\\0.7.8\\org.jacoco.agent-0
+.7.8-runtime.jar=destfile=E:\\my\\gitee\\nacos\\address\\target\\jacoco.exec -jar E:\my\gitee\nacos\address\target\surefire\surefirebooter767
+8408035638674756.jar E:\my\gitee\nacos\address\target\surefire 2020-09-29T10-57-57_791-jvmRun1 surefire1438357241529894056tmp surefire_334609
+75724650431548tmp"
+Error occurred in starting fork, check output in log
+Process Exit Code: 1
+org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.ex
+it called?
+Command was cmd.exe /X /C "D:\dev\env\jdk\jdk8\jre\bin\java -javaagent:D:\\dev\\rep\\org\\jacoco\\org.jacoco.agent\\0.7.8\\org.jacoco.agent-0
+.7.8-runtime.jar=destfile=E:\\my\\gitee\\nacos\\address\\target\\jacoco.exec -jar E:\my\gitee\nacos\address\target\surefire\surefirebooter767
+8408035638674756.jar E:\my\gitee\nacos\address\target\surefire 2020-09-29T10-57-57_791-jvmRun1 surefire1438357241529894056tmp surefire_334609
+75724650431548tmp"
+Error occurred in starting fork, check output in log
+Process Exit Code: 1
+        at org.apache.maven.plugin.surefire.booterclient.ForkStarter.fork(ForkStarter.java:679)
+        at org.apache.maven.plugin.surefire.booterclient.ForkStarter.fork(ForkStarter.java:533)
+        at org.apache.maven.plugin.surefire.booterclient.ForkStarter.run(ForkStarter.java:279)
+        at org.apache.maven.plugin.surefire.booterclient.ForkStarter.run(ForkStarter.java:243)
+        at org.apache.maven.plugin.surefire.AbstractSurefireMojo.executeProvider(AbstractSurefireMojo.java:1077)
+        at org.apache.maven.plugin.surefire.AbstractSurefireMojo.executeAfterPreconditionsChecked(AbstractSurefireMojo.java:907)
+        at org.apache.maven.plugin.surefire.AbstractSurefireMojo.execute(AbstractSurefireMojo.java:785)
+        at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:137)
+        at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:210)
+        at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:156)
+        at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:148)
+        at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:117)
+        at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:81)
+        at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:56)
+        at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:128)
+        at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:305)
+        at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:192)
+        at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:105)
+        at org.apache.maven.cli.MavenCli.execute(MavenCli.java:957)
+        at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:289)
+        at org.apache.maven.cli.MavenCli.main(MavenCli.java:193)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:498)
+        at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:282)
+        at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:225)
+        at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:406)
+        at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:347)
+
+[INFO]
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ nacos-address ---
+[INFO] Building jar: E:\my\gitee\nacos\address\target\nacos-address-1.3.2.jar
+[INFO]
+[INFO] --- maven-javadoc-plugin:2.10.4:jar (attach-javadocs) @ nacos-address ---
+[INFO] Skipping javadoc generation
+[INFO]
+[INFO] >>> maven-source-plugin:3.0.1:jar (attach-sources) > generate-sources @ nacos-address >>>
+[INFO]
+[INFO] --- maven-enforcer-plugin:1.4.1:enforce (enforce-ban-circular-dependencies) @ nacos-address ---
+[INFO]
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (validate) @ nacos-address ---
+[INFO] 寮?濮嬫鏌モ?︹??
+妫?鏌ュ畬鎴愩??
+[INFO] You have 0 Checkstyle violations.
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.7.8:prepare-agent (default-prepare-agent) @ nacos-address ---
+[INFO] argLine set to -javaagent:D:\\dev\\rep\\org\\jacoco\\org.jacoco.agent\\0.7.8\\org.jacoco.agent-0.7.8-runtime.jar=destfile=E:\\my\\gite
+e\\nacos\\address\\target\\jacoco.exec
+[INFO]
+[INFO] <<< maven-source-plugin:3.0.1:jar (attach-sources) < generate-sources @ nacos-address <<<
+[INFO]
+[INFO]
+[INFO] --- maven-source-plugin:3.0.1:jar (attach-sources) @ nacos-address ---
+[INFO] Building jar: E:\my\gitee\nacos\address\target\nacos-address-1.3.2-sources.jar
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.7.8:prepare-agent-integration (default-prepare-agent-integration) @ nacos-address ---
+[INFO] failsafeArgLine set to -javaagent:D:\\dev\\rep\\org\\jacoco\\org.jacoco.agent\\0.7.8\\org.jacoco.agent-0.7.8-runtime.jar=destfile=E:\\
+my\\gitee\\nacos\\address\\target\\jacoco-it.exec
+[INFO]
+[INFO] >>> maven-pmd-plugin:3.8:check (default) > :pmd @ nacos-address >>>
+[INFO]
+[INFO] --- maven-pmd-plugin:3.8:pmd (pmd) @ nacos-address ---
+[WARNING] Unable to locate Source XRef to link to - DISABLED
+[WARNING] Unable to locate Source XRef to link to - DISABLED
+[INFO]
+[INFO] <<< maven-pmd-plugin:3.8:check (default) < :pmd @ nacos-address <<<
+[INFO]
+[INFO]
+[INFO] --- maven-pmd-plugin:3.8:check (default) @ nacos-address ---
+[INFO]
+[INFO]
+[INFO] --- apache-rat-plugin:0.12:check (default) @ nacos-address ---
+[INFO] Enabled default license matchers.
+[INFO] Will parse SCM ignores for exclusions...
+[INFO] Finished adding exclusions from SCM ignore files.
+[INFO] 61 implicit excludes (use -debug for more details).
+[INFO] Exclude: .editorconfig
+[INFO] Exclude: .travis.yml
+[INFO] Exclude: CONTRIBUTING.md
+[INFO] Exclude: CODE_OF_CONDUCT.md
+[INFO] Exclude: CHANGELOG.md
+[INFO] Exclude: style/codeStyle.md
+[INFO] Exclude: REPORTING-BUGS.md
+[INFO] Exclude: README.md
+[INFO] Exclude: .github/**/*
+[INFO] Exclude: doc/*
+[INFO] Exclude: derby.log
+[INFO] Exclude: logs/*
+[INFO] Exclude: src/main/resources/static/**
+[INFO] Exclude: **/istio/model/**
+[INFO] Exclude: **/consistency/entity/**
+[INFO] Exclude: **/*.txt
+[INFO] Exclude: **/*.factories
+[INFO] 18 resources included (use -debug for more details)
+[INFO] Rat check: Summary over all files. Unapproved: 1, unknown: 1, generated: 0, approved: 17 licenses.
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for Alibaba NACOS 1.3.2 1.3.2:
+[INFO]
+[INFO] Alibaba NACOS 1.3.2 ................................ SUCCESS [  3.210 s]
+[INFO] nacos-api 1.3.2 .................................... SUCCESS [  7.445 s]
+[INFO] nacos-common 1.3.2 ................................. SUCCESS [ 37.862 s]
+[INFO] nacos-consistency 1.3.2 ............................ SUCCESS [ 11.175 s]
+[INFO] nacos-core 1.3.2 ................................... SUCCESS [ 16.443 s]
+[INFO] nacos-config 1.3.2 ................................. SUCCESS [ 10.851 s]
+[INFO] nacos-cmdb 1.3.2 ................................... SUCCESS [  1.263 s]
+[INFO] nacos-naming 1.3.2 ................................. SUCCESS [  7.104 s]
+[INFO] nacos-address 1.3.2 ................................ FAILURE [  1.563 s]
+[INFO] nacos-client 1.3.2 ................................. SKIPPED
+[INFO] nacos-istio 1.3.2 .................................. SKIPPED
+[INFO] nacos-console 1.3.2 ................................ SKIPPED
+[INFO] nacos-test 1.3.2 ................................... SKIPPED
+[INFO] nacos-example 1.3.2 ................................ SKIPPED
+[INFO] nacos-distribution 1.3.2 ........................... SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:37 min
+[INFO] Finished at: 2020-09-29T10:59:28+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.rat:apache-rat-plugin:0.12:check (default) on project nacos-address: Too many files with unapproved
+ license: 1 See RAT report in: E:\my\gitee\nacos\address\target\rat.txt -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR]
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :nacos-address
+
+E:\my\gitee\nacos>D:\dev\env\maven\bin\mvn -Prelease-nacos clean install -U
+
+E:\my\gitee\nacos>set JAVA_HOME=D:\dev\env\jdk\jdk8
+[INFO] Scanning for projects...
+[WARNING]
+[WARNING] Some problems were encountered while building the effective model for com.alibaba.nacos:nacos-console:jar:1.3.2
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-jar-plugin is missing. @ line 121, column 29
+[WARNING] 'build.plugins.plugin.version' for org.springframework.boot:spring-boot-maven-plugin is missing. @ line 132, column 29
+[WARNING]
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING]
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING]
+[INFO] ------------------------------------------------------------------------
+[INFO] Detecting the operating system and CPU architecture
+[INFO] ------------------------------------------------------------------------
+[INFO] os.detected.name: windows
+[INFO] os.detected.arch: x86_64
+[INFO] os.detected.version: 10.0
+[INFO] os.detected.version.major: 10
+[INFO] os.detected.version.minor: 0
+[INFO] os.detected.classifier: windows-x86_64
+[WARNING] The project com.alibaba.nacos:nacos-all:pom:1.3.2 uses prerequisites which is on

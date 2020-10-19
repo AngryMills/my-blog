@@ -1,0 +1,71 @@
+大家好，我是烤鸭：
+	springboot 整合rabbitmq,一搜网上的配置又多又麻烦，记录下。
+    这个适用的是 项目单个 exchange的情况。
+
+1. pom文件
+<!--rabbitmq-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+    <version>2.2.6.RELEASE</version>
+</dependency>
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>${springboot.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+2. yml 文件
+spring:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: root
+    password: root
+    #虚拟host 可以不设置,使用server默认host
+    virtual-host: test
+    template:
+      exchange: follow-feed
+
+3. 消费者
+@Component
+public class TransferConsumer {
+
+    @RabbitListener(queues = "test.mq.consumer")
+    public void processTopicMsg(Message massage) {
+        String msg = new String(massage.getBody(), StandardCharsets.UTF_8);
+        System.out.println("test.mq.consumer===>"+msg);
+    }
+}
+
+
+4. 生产者
+/**
+ * convertAndSend 需要的是 exchange和 routingKey
+ * exchange 已经在 application.yml 配置了 ,routingKey 需要在 rabbitmq admin 和 exchange/queue 绑定下
+ **/	
+@Component
+public class TransferProducer {
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    public void processTopicMsg(String message) {
+        for (int i = 0; i < 10; i++) {
+            rabbitTemplate.convertAndSend("test.mq.consumer",message);
+        }
+        System.out.println("convertAndSend success");
+    }
+}
+
+
+5. rabbitmq admin
+配置 routingKey和 exchange/queue 绑定
+
+只能选择已经存在的exchange,不然绑定不成功。
+

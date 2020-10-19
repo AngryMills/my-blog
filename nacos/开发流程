@@ -1,0 +1,9 @@
+https://github.com/alibaba/nacos/issues/191
+
+mvn -B clean package apache-rat:check findbugs:findbugs -Dmaven.test.skip=true （校验文件许可证）
+mvn -Prelease-nacos clean install -U （编译打包命令）
+mvn clean install -Pit-test （跑集成测试）
+
+enhanceRequireObjectCache.setContextSnapshot(ContextManager.capture());
+
+// Because of `fall back` method running in other thread. so we need capture concurrent span for tracing.

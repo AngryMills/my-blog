@@ -1,0 +1,108 @@
+
+*****************************************************
+Summary
+-------
+Generated at: 2020-09-29T10:59:28+08:00
+
+Notes: 0
+Binaries: 0
+Archives: 0
+Standards: 18
+
+Apache Licensed: 17
+Generated Documents: 0
+
+JavaDocs are generated, thus a license header is optional.
+Generated files do not require license headers.
+
+1 Unknown Licenses
+
+*****************************************************
+
+Files with unapproved licenses:
+
+  E:/my/gitee/nacos/address/hs_err_pid148576.log
+
+*****************************************************
+
+*****************************************************
+  Files with Apache License headers will be marked AL
+  Binary files (which do not require any license headers) will be marked B
+  Compressed archives will be marked A
+  Notices, licenses etc. will be marked N
+ !????? E:/my/gitee/nacos/address/hs_err_pid148576.log
+  AL    E:/my/gitee/nacos/address/pom.xml
+  AL    E:/my/gitee/nacos/address/src/main/java/com/alibaba/nacos/address/AddressServer.java
+  AL    E:/my/gitee/nacos/address/src/main/java/com/alibaba/nacos/address/auth/AddressServerAuthManager.java
+  AL    E:/my/gitee/nacos/address/src/main/java/com/alibaba/nacos/address/component/AddressServerGeneratorManager.java
+  AL    E:/my/gitee/nacos/address/src/main/java/com/alibaba/nacos/address/component/AddressServerManager.java
+  AL    E:/my/gitee/nacos/address/src/main/java/com/alibaba/nacos/address/configuration/AddressServerSpringConfiguration.java
+  AL    E:/my/gitee/nacos/address/src/main/java/com/alibaba/nacos/address/constant/AddressServerConstants.java
+  AL    E:/my/gitee/nacos/address/src/main/java/com/alibaba/nacos/address/controller/AddressServerClusterController.java
+  AL    E:/my/gitee/nacos/address/src/main/java/com/alibaba/nacos/address/controller/ServerListController.java
+  AL    E:/my/gitee/nacos/address/src/main/java/com/alibaba/nacos/address/misc/Loggers.java
+  AL    E:/my/gitee/nacos/address/src/main/java/com/alibaba/nacos/address/util/AddressServerParamCheckUtil.java
+  AL    E:/my/gitee/nacos/address/src/main/resources/application.properties
+  AL    E:/my/gitee/nacos/address/src/main/resources/META-INF/logback/nacos-included.xml
+  AL    E:/my/gitee/nacos/address/src/main/resources/META-INF/nacos-default.properties
+  AL    E:/my/gitee/nacos/address/src/test/java/com/alibaba/nacos/address/AddressServerControllerTests.java
+  AL    E:/my/gitee/nacos/address/src/test/java/com/alibaba/nacos/address/ParamCheckUtilTests.java
+  AL    E:/my/gitee/nacos/address/src/test/java/com/alibaba/nacos/address/SimpleHttpTestUtils.java
+ 
+*****************************************************
+
+ Printing headers for text files without a valid license header...
+ 
+=====================================================
+== File: E:/my/gitee/nacos/address/hs_err_pid148576.log
+=====================================================
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 1048576 bytes for AllocateHeap
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Zero Based Compressed Oops mode in which the Java heap is
+#     placed in the first 32GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 32GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (memory/allocation.inline.hpp:61), pid=148576, tid=0x0000000000023c6c
+#
+# JRE version:  (8.0_261-b12) (build )
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.261-b12 mixed mode windows-amd64 compressed oops)
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000029545b84000):  JavaThread "Unknown thread" [_thread_in_vm, id=146540, stack(0x000000d329300000,0x000000d329400000)]
+
+Stack: [0x000000d329300000,0x000000d329400000]
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x33e5f9]
+V  [jvm.dll+0x2850e2]
+V  [jvm.dll+0x285d8d]
+V  [jvm.dll+0x27c895]
+V  [jvm.dll+0x1565d]
+V  [jvm.dll+0x3d87f8]
+V  [jvm.dll+0x3d95be]
+V  [jvm.dll+0x3d5557]
+V  [jvm.dll+0x10c61f]
+V  [jvm.dll+0x21a00b]
+V  [jvm.dll+0x248687]
+V  [jvm.dll+0x172116]
+C  [java.exe+0x2312]
+C  [java.exe+0x15f64]
+C  [KERNEL32.DLL+0x17bd4]
+C  [ntdll.dll+0x6ced1]
+

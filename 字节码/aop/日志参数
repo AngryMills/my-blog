@@ -1,0 +1,20 @@
+{
+	"seq": 1,
+	"ltype": 1,
+	"reqid": "_0a43351d-ea2d-4953-8353-02fa19a55b7a",
+	"itime": "2020-08-03 20:24:59",
+	"uri": "hot-topic-api,com.yiche.backend.hottopic.api.controller.HomeController.abc-/abc",
+	"url": "/abc",
+	"dur": "23",
+	"gudslf": "5bf88f5e-45b4-4217-a5b9-da22b28da924",
+	"hst": "172.20.30.137:58180",
+	"ip": "0:0:0:0:0:0:0:1",
+	"lgin": "{}",
+	"inbyte": 2,
+	"outbyte": 67,
+	"aname": "3021",
+	"urifst": "hot-topic-api,com.yiche.backend.hottopic.api.controller.HomeController.abc-/abc",
+	"urilst": "/abc"
+}
+
+

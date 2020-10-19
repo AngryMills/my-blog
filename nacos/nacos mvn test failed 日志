@@ -1,0 +1,427 @@
+:37:12.758 [main] DEBUG org.springframework.test.web.servlet.TestDispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+10:37:12.759 [main] DEBUG org.springframework.test.web.servlet.TestDispatcherServlet - GET "/v1/console/health/readiness", parameters={}
+10:37:12.759 [main] DEBUG org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping - Mapped to public org.springfra
+mework.http.ResponseEntity com.alibaba.nacos.console.controller.HealthController.readiness(javax.servlet.http.HttpServletRequest)
+10:37:12.760 [main] ERROR com.alibaba.nacos.console.controller.HealthController - Naming health check fail.
+java.lang.RuntimeException: HealthControllerTest.testReadiness
+        at com.alibaba.nacos.console.controller.HealthController.isNamingReadiness(HealthController.java:102)
+        at com.alibaba.nacos.console.controller.HealthController.readiness(HealthController.java:72)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:498)
+        at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190)
+        at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138)
+        at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.
+java:105)
+        at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapte
+r.java:892)
+        at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.jav
+a:797)
+        at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+        at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040)
+        at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:943)
+        at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+        at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:626)
+        at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+        at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72)
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:733)
+        at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+        at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+        at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:183)
+        at com.alibaba.nacos.console.controller.HealthControllerTest.testReadiness(HealthControllerTest.java:103)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:498)
+        at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+        at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+        at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+        at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+        at org.springframework.test.context.junit4.statements.RunBeforeTestExecutionCallbacks.evaluate(RunBeforeTestExecutionCallbacks.java:7
+4)
+        at org.springframework.test.context.junit4.statements.RunAfterTestExecutionCallbacks.evaluate(RunAfterTestExecutionCallbacks.java:84)
+
+        at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+        at org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks.evaluate(RunBeforeTestMethodCallbacks.java:75)
+        at org.springframework.test.context.junit4.statements.RunAfterTestMethodCallbacks.evaluate(RunAfterTestMethodCallbacks.java:86)
+        at org.springframework.test.context.junit4.statements.SpringRepeat.evaluate(SpringRepeat.java:84)
+        at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+        at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:251)
+        at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:97)
+        at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+        at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+        at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+        at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+        at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+        at org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks.evaluate(RunBeforeTestClassCallbacks.java:61)
+        at org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks.evaluate(RunAfterTestClassCallbacks.java:70)
+        at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+        at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.run(SpringJUnit4ClassRunner.java:190)
+        at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+        at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:272)
+        at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:236)
+        at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+        at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+        at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+10:37:12.761 [main] DEBUG org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] a
+nd supported [text/plain, */*, application/json, application/*+json]
+10:37:12.761 [main] DEBUG org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor - Writing ["Naming is not in readin
+ess"]
+10:37:12.762 [main] DEBUG org.springframework.test.web.servlet.TestDispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+10:37:12.763 [main] DEBUG org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate - Retrieved ApplicationContext from c
+ache with key [[WebMergedContextConfiguration@7b7683d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframew
+ork.mock.web.MockServletContext}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourcePro
+perties = '{}', contextCustomizers = set[org.springframework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.sprin
+gframework.boot.test.context.filter.ExcludeFilterContextCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCust
+omizerFactory$DuplicateJsonObjectContextCustomizer@11a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resource
+BasePath = 'src/main/webapp', contextLoader = 'org.springframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]]]
+10:37:12.763 [main] DEBUG org.springframework.test.context.cache - Spring test ApplicationContext cache statistics: [DefaultContextCache@70d5
+d96b size = 1, maxSize = 32, parentContextCount = 0, hitCount = 3, missCount = 1]
+10:37:12.764 [main] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - After test method: context [
+DefaultTestContext@472698d testClass = HealthControllerTest, testInstance = com.alibaba.nacos.console.controller.HealthControllerTest@4cfc0c4
+8, testMethod = testReadiness@HealthControllerTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@7b768
+3d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframework.mock.web.MockServletContext}', contextInitializ
+erClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[org.spring
+framework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.springframework.boot.test.context.filter.ExcludeFilterCo
+ntextCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@
+11a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resourceBasePath = 'src/main/webapp', contextLoader = 'org.
+springframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web.S
+ervletTestExecutionListener.populatedRequestContextHolder' -> true, 'org.springframework.test.context.web.ServletTestExecutionListener.resetR
+equestContextHolder' -> true]], class annotated with @DirtiesContext [false] with mode [null], method annotated with @DirtiesContext [false]
+with mode [null].
+10:37:12.764 [main] DEBUG org.springframework.test.context.web.ServletTestExecutionListener - Resetting RequestContextHolder for test context
+ [DefaultTestContext@472698d testClass = HealthControllerTest, testInstance = com.alibaba.nacos.console.controller.HealthControllerTest@4cfc0
+c48, testMethod = testReadiness@HealthControllerTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@7b7
+683d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframework.mock.web.MockServletContext}', contextInitial
+izerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[org.spri
+ngframework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.springframework.boot.test.context.filter.ExcludeFilter
+ContextCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomize
+r@11a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resourceBasePath = 'src/main/webapp', contextLoader = 'or
+g.springframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web
+.ServletTestExecutionListener.populatedRequestContextHolder' -> true, 'org.springframework.test.context.web.ServletTestExecutionListener.rese
+tRequestContextHolder' -> true]].
+10:37:12.766 [main] DEBUG org.springframework.test.annotation.ProfileValueUtils - Retrieved @ProfileValueSourceConfiguration [null] for test
+class [com.alibaba.nacos.console.controller.HealthControllerTest]
+10:37:12.767 [main] DEBUG org.springframework.test.annotation.ProfileValueUtils - Retrieved ProfileValueSource type [class org.springframewor
+k.test.annotation.SystemProfileValueSource] for class [com.alibaba.nacos.console.controller.HealthControllerTest]
+10:37:12.767 [main] DEBUG org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate - Retrieved ApplicationContext from c
+ache with key [[WebMergedContextConfiguration@7b7683d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframew
+ork.mock.web.MockServletContext}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourcePro
+perties = '{}', contextCustomizers = set[org.springframework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.sprin
+gframework.boot.test.context.filter.ExcludeFilterContextCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCust
+omizerFactory$DuplicateJsonObjectContextCustomizer@11a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resource
+BasePath = 'src/main/webapp', contextLoader = 'org.springframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]]]
+10:37:12.767 [main] DEBUG org.springframework.test.context.cache - Spring test ApplicationContext cache statistics: [DefaultContextCache@70d5
+d96b size = 1, maxSize = 32, parentContextCount = 0, hitCount = 4, missCount = 1]
+10:37:12.767 [main] DEBUG org.springframework.test.context.web.ServletTestExecutionListener - Setting up MockHttpServletRequest, MockHttpServ
+letResponse, ServletWebRequest, and RequestContextHolder for test context [DefaultTestContext@472698d testClass = HealthControllerTest, testI
+nstance = com.alibaba.nacos.console.controller.HealthControllerTest@581b38e, testMethod = [null], testException = [null], mergedContextConfig
+uration = [WebMergedContextConfiguration@7b7683d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframework.m
+ock.web.MockServletContext}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperti
+es = '{}', contextCustomizers = set[org.springframework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.springfram
+ework.boot.test.context.filter.ExcludeFilterContextCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomize
+rFactory$DuplicateJsonObjectContextCustomizer@11a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resourceBaseP
+ath = 'src/main/webapp', contextLoader = 'org.springframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]], attributes
+ = map['org.springframework.test.context.support.DependencyInjectionTestExecutionListener.reinjectDependencies' -> true]].
+10:37:12.768 [main] DEBUG org.springframework.test.context.support.DependencyInjectionTestExecutionListener - Performing dependency injection
+ for test context [[DefaultTestContext@472698d testClass = HealthControllerTest, testInstance = com.alibaba.nacos.console.controller.HealthCo
+ntrollerTest@581b38e, testMethod = [null], testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@7b7683d4 testC
+lass = HealthControllerTest, locations = '{}', classes = '{class org.springframework.mock.web.MockServletContext}', contextInitializerClasses
+ = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[org.springframework
+.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.springframework.boot.test.context.filter.ExcludeFilterContextCust
+omizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@11a00961,
+ org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springfra
+mework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web.ServletTes
+tExecutionListener.populatedRequestContextHolder' -> true, 'org.springframework.test.context.web.ServletTestExecutionListener.resetRequestCon
+textHolder' -> true, 'org.springframework.test.context.support.DependencyInjectionTestExecutionListener.reinjectDependencies' -> true]]].
+10:37:12.769 [main] DEBUG org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate - Retrieved ApplicationContext from c
+ache with key [[WebMergedContextConfiguration@7b7683d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframew
+ork.mock.web.MockServletContext}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourcePro
+perties = '{}', contextCustomizers = set[org.springframework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.sprin
+gframework.boot.test.context.filter.ExcludeFilterContextCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCust
+omizerFactory$DuplicateJsonObjectContextCustomizer@11a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resource
+BasePath = 'src/main/webapp', contextLoader = 'org.springframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]]]
+10:37:12.769 [main] DEBUG org.springframework.test.context.cache - Spring test ApplicationContext cache statistics: [DefaultContextCache@70d5
+d96b size = 1, maxSize = 32, parentContextCount = 0, hitCount = 5, missCount = 1]
+10:37:12.770 [main] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test method: context
+[DefaultTestContext@472698d testClass = HealthControllerTest, testInstance = com.alibaba.nacos.console.controller.HealthControllerTest@581b38
+e, testMethod = testLiveness@HealthControllerTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@7b7683
+d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframework.mock.web.MockServletContext}', contextInitialize
+rClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[org.springf
+ramework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.springframework.boot.test.context.filter.ExcludeFilterCon
+textCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@1
+1a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resourceBasePath = 'src/main/webapp', contextLoader = 'org.s
+pringframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web.Se
+rvletTestExecutionListener.populatedRequestContextHolder' -> true, 'org.springframework.test.context.web.ServletTestExecutionListener.resetRe
+questContextHolder' -> true]], class annotated with @DirtiesContext [false] with mode [null], method annotated with @DirtiesContext [false] w
+ith mode [null].
+10:37:12.771 [main] DEBUG org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate - Retrieved ApplicationContext from c
+ache with key [[WebMergedContextConfiguration@7b7683d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframew
+ork.mock.web.MockServletContext}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourcePro
+perties = '{}', contextCustomizers = set[org.springframework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.sprin
+gframework.boot.test.context.filter.ExcludeFilterContextCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCust
+omizerFactory$DuplicateJsonObjectContextCustomizer@11a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resource
+BasePath = 'src/main/webapp', contextLoader = 'org.springframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]]]
+10:37:12.771 [main] DEBUG org.springframework.test.context.cache - Spring test ApplicationContext cache statistics: [DefaultContextCache@70d5
+d96b size = 1, maxSize = 32, parentContextCount = 0, hitCount = 6, missCount = 1]
+10:37:12.777 [main] DEBUG org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping - 2 mappings in <unknown>
+10:37:12.788 [main] DEBUG org.hibernate.validator.internal.engine.resolver.TraversableResolvers - Cannot find javax.persistence.Persistence o
+n classpath. Assuming non JPA 2 environment. All properties will per default be traversable.
+10:37:12.789 [main] DEBUG org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator - Loaded expression factory via orig
+inal TCCL
+10:37:12.789 [main] DEBUG org.hibernate.validator.internal.engine.ConfigurationImpl - Setting custom MessageInterpolator of type org.springfr
+amework.validation.beanvalidation.LocaleContextMessageInterpolator
+10:37:12.789 [main] DEBUG org.hibernate.validator.internal.engine.ConfigurationImpl - Setting custom ParameterNameProvider of type org.spring
+framework.validation.beanvalidation.LocalValidatorFactoryBean$1
+10:37:12.790 [main] DEBUG org.hibernate.validator.internal.xml.config.ValidationXmlParser - Trying to load META-INF/validation.xml for XML ba
+sed Validator configuration.
+10:37:12.790 [main] DEBUG org.hibernate.validator.internal.xml.config.ResourceLoaderHelper - Trying to load META-INF/validation.xml via TCCL
+10:37:12.790 [main] DEBUG org.hibernate.validator.internal.xml.config.ResourceLoaderHelper - Trying to load META-INF/validation.xml via Hiber
+nate Validator's class loader
+10:37:12.790 [main] DEBUG org.hibernate.validator.internal.xml.config.ValidationXmlParser - No META-INF/validation.xml found. Using annotatio
+n based configuration only.
+10:37:12.801 [main] DEBUG org.hibernate.validator.internal.engine.ValidatorFactoryImpl - HV000234: Using org.springframework.validation.beanv
+alidation.LocaleContextMessageInterpolator as ValidatorFactory-scoped message interpolator.
+10:37:12.801 [main] DEBUG org.hibernate.validator.internal.engine.ValidatorFactoryImpl - HV000234: Using org.hibernate.validator.internal.eng
+ine.resolver.TraverseAllTraversableResolver as ValidatorFactory-scoped traversable resolver.
+10:37:12.801 [main] DEBUG org.hibernate.validator.internal.engine.ValidatorFactoryImpl - HV000234: Using org.hibernate.validator.internal.uti
+l.ExecutableParameterNameProvider as ValidatorFactory-scoped parameter name provider.
+10:37:12.801 [main] DEBUG org.hibernate.validator.internal.engine.ValidatorFactoryImpl - HV000234: Using org.hibernate.validator.internal.eng
+ine.DefaultClockProvider as ValidatorFactory-scoped clock provider.
+10:37:12.801 [main] DEBUG org.hibernate.validator.internal.engine.ValidatorFactoryImpl - HV000234: Using org.hibernate.validator.internal.eng
+ine.scripting.DefaultScriptEvaluatorFactory as ValidatorFactory-scoped script evaluator factory.
+10:37:12.802 [main] DEBUG org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @Mod
+elAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+10:37:12.806 [main] DEBUG org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 0
+ @ExceptionHandler, 1 ResponseBodyAdvice
+10:37:12.807 [main] INFO org.springframework.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+10:37:12.807 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet - Initializing Servlet ''
+10:37:12.807 [main] DEBUG org.springframework.test.web.servlet.TestDispatcherServlet - Detected AcceptHeaderLocaleResolver
+10:37:12.807 [main] DEBUG org.springframework.test.web.servlet.TestDispatcherServlet - Detected FixedThemeResolver
+10:37:12.807 [main] DEBUG org.springframework.test.web.servlet.TestDispatcherServlet - Detected org.springframework.web.servlet.view.DefaultR
+equestToViewNameTranslator@1eeb3ae6
+10:37:12.807 [main] DEBUG org.springframework.test.web.servlet.TestDispatcherServlet - Detected org.springframework.web.servlet.support.Sessi
+onFlashMapManager@1e77dac0
+10:37:12.807 [main] DEBUG org.springframework.test.web.servlet.TestDispatcherServlet - enableLoggingRequestDetails='false': request parameter
+s and headers will be masked to prevent unsafe logging of potentially sensitive data
+10:37:12.807 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet - Completed initialization in 0 ms
+10:37:12.808 [main] DEBUG org.springframework.test.web.servlet.TestDispatcherServlet - GET "/v1/console/health/liveness", parameters={}
+10:37:12.808 [main] DEBUG org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping - Mapped to public org.springfra
+mework.http.ResponseEntity com.alibaba.nacos.console.controller.HealthController.liveness()
+10:37:12.809 [main] DEBUG org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] a
+nd supported [text/plain, */*, application/json, application/*+json]
+10:37:12.809 [main] DEBUG org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor - Writing ["OK"]
+10:37:12.810 [main] DEBUG org.springframework.test.web.servlet.TestDispatcherServlet - Completed 200 OK
+10:37:12.810 [main] DEBUG org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate - Retrieved ApplicationContext from c
+ache with key [[WebMergedContextConfiguration@7b7683d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframew
+ork.mock.web.MockServletContext}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourcePro
+perties = '{}', contextCustomizers = set[org.springframework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.sprin
+gframework.boot.test.context.filter.ExcludeFilterContextCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCust
+omizerFactory$DuplicateJsonObjectContextCustomizer@11a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resource
+BasePath = 'src/main/webapp', contextLoader = 'org.springframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]]]
+10:37:12.810 [main] DEBUG org.springframework.test.context.cache - Spring test ApplicationContext cache statistics: [DefaultContextCache@70d5
+d96b size = 1, maxSize = 32, parentContextCount = 0, hitCount = 7, missCount = 1]
+10:37:12.811 [main] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - After test method: context [
+DefaultTestContext@472698d testClass = HealthControllerTest, testInstance = com.alibaba.nacos.console.controller.HealthControllerTest@581b38e
+, testMethod = testLiveness@HealthControllerTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@7b7683d
+4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframework.mock.web.MockServletContext}', contextInitializer
+Classes = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[org.springfr
+amework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.springframework.boot.test.context.filter.ExcludeFilterCont
+extCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@11
+a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resourceBasePath = 'src/main/webapp', contextLoader = 'org.sp
+ringframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web.Ser
+vletTestExecutionListener.populatedRequestContextHolder' -> true, 'org.springframework.test.context.web.ServletTestExecutionListener.resetReq
+uestContextHolder' -> true]], class annotated with @DirtiesContext [false] with mode [null], method annotated with @DirtiesContext [false] wi
+th mode [null].
+10:37:12.812 [main] DEBUG org.springframework.test.context.web.ServletTestExecutionListener - Resetting RequestContextHolder for test context
+ [DefaultTestContext@472698d testClass = HealthControllerTest, testInstance = com.alibaba.nacos.console.controller.HealthControllerTest@581b3
+8e, testMethod = testLiveness@HealthControllerTest, testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@7b768
+3d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframework.mock.web.MockServletContext}', contextInitializ
+erClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{}', contextCustomizers = set[org.spring
+framework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.springframework.boot.test.context.filter.ExcludeFilterCo
+ntextCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@
+11a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resourceBasePath = 'src/main/webapp', contextLoader = 'org.
+springframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web.S
+ervletTestExecutionListener.populatedRequestContextHolder' -> true, 'org.springframework.test.context.web.ServletTestExecutionListener.resetR
+equestContextHolder' -> true]].
+10:37:12.812 [main] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - After test class: context [D
+efaultTestContext@472698d testClass = HealthControllerTest, testInstance = [null], testMethod = [null], testException = [null], mergedContext
+Configuration = [WebMergedContextConfiguration@7b7683d4 testClass = HealthControllerTest, locations = '{}', classes = '{class org.springframe
+work.mock.web.MockServletContext}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourcePr
+operties = '{}', contextCustomizers = set[org.springframework.test.context.web.socket.MockServerContainerContextCustomizer@6ee8dcd3, org.spri
+ngframework.boot.test.context.filter.ExcludeFilterContextCustomizer@cfbc8e8, org.springframework.boot.test.json.DuplicateJsonObjectContextCus
+tomizerFactory$DuplicateJsonObjectContextCustomizer@11a00961, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0], resourc
+eBasePath = 'src/main/webapp', contextLoader = 'org.springframework.test.context.web.WebDelegatingSmartContextLoader', parent = [null]], attr
+ibutes = map['org.springframework.test.context.support.DependencyInjectionTestExecutionListener.reinjectDependencies' -> true]], class annota
+ted with @DirtiesContext [false] with mode [null].
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.869 s - in com.alibaba.nacos.console.controller.HealthControllerTest
+
+[INFO] Running com.alibaba.nacos.console.controller.UserControllerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s - in com.alibaba.nacos.console.controller.UserControllerTest
+10:37:14.287 [Thread-1] DEBUG org.springframework.web.context.support.GenericWebApplicationContext - Closing org.springframework.web.context.
+support.GenericWebApplicationContext@7e744f43, started on Tue Sep 29 10:37:10 CST 2020
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[INFO]
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ nacos-console ---
+[INFO] Building jar: E:\my\gitee\nacos\console\target\nacos-server.jar
+[INFO]
+[INFO] --- maven-javadoc-plugin:2.10.4:jar (attach-javadocs) @ nacos-console ---
+[INFO] Skipping javadoc generation
+[INFO]
+[INFO] >>> maven-source-plugin:3.0.1:jar (attach-sources) > generate-sources @ nacos-console >>>
+[INFO]
+[INFO] --- maven-enforcer-plugin:1.4.1:enforce (enforce-ban-circular-dependencies) @ nacos-console ---
+[INFO]
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (validate) @ nacos-console ---
+[INFO] 寮?濮嬫鏌モ?︹??
+妫?鏌ュ畬鎴愩??
+[INFO] You have 0 Checkstyle violations.
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.7.8:prepare-agent (default-prepare-agent) @ nacos-console ---
+[INFO] argLine set to -javaagent:D:\\dev\\rep\\org\\jacoco\\org.jacoco.agent\\0.7.8\\org.jacoco.agent-0.7.8-runtime.jar=destfile=E:\\my\\gite
+e\\nacos\\console\\target\\jacoco.exec
+[INFO]
+[INFO] <<< maven-source-plugin:3.0.1:jar (attach-sources) < generate-sources @ nacos-console <<<
+[INFO]
+[INFO]
+[INFO] --- maven-source-plugin:3.0.1:jar (attach-sources) @ nacos-console ---
+[INFO] Building jar: E:\my\gitee\nacos\console\target\nacos-server-sources.jar
+[INFO]
+[INFO] --- spring-boot-maven-plugin:2.3.4.RELEASE:repackage (default) @ nacos-console ---
+[INFO] Layout: ZIP
+[INFO] Replacing main artifact with repackaged archive
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.7.8:prepare-agent-integration (default-prepare-agent-integration) @ nacos-console ---
+[INFO] failsafeArgLine set to -javaagent:D:\\dev\\rep\\org\\jacoco\\org.jacoco.agent\\0.7.8\\org.jacoco.agent-0.7.8-runtime.jar=destfile=E:\\
+my\\gitee\\nacos\\console\\target\\jacoco-it.exec
+[INFO]
+[INFO] >>> maven-pmd-plugin:3.8:check (default) > :pmd @ nacos-console >>>
+[INFO]
+[INFO] --- maven-pmd-plugin:3.8:pmd (pmd) @ nacos-console ---
+[WARNING] Unable to locate Source XRef to link to - DISABLED
+[WARNING] Unable to locate Source XRef to link to - DISABLED
+[INFO]
+[INFO] <<< maven-pmd-plugin:3.8:check (default) < :pmd @ nacos-console <<<
+[INFO]
+[INFO]
+[INFO] --- maven-pmd-plugin:3.8:check (default) @ nacos-console ---
+[INFO]
+[INFO]
+[INFO] --- apache-rat-plugin:0.12:check (default) @ nacos-console ---
+[INFO] Enabled default license matchers.
+[INFO] Will parse SCM ignores for exclusions...
+[INFO] Finished adding exclusions from SCM ignore files.
+[INFO] 61 implicit excludes (use -debug for more details).
+[INFO] Exclude: .editorconfig
+[INFO] Exclude: .travis.yml
+[INFO] Exclude: CONTRIBUTING.md
+[INFO] Exclude: CODE_OF_CONDUCT.md
+[INFO] Exclude: CHANGELOG.md
+[INFO] Exclude: style/codeStyle.md
+[INFO] Exclude: REPORTING-BUGS.md
+[INFO] Exclude: README.md
+[INFO] Exclude: .github/**/*
+[INFO] Exclude: doc/*
+[INFO] Exclude: derby.log
+[INFO] Exclude: logs/*
+[INFO] Exclude: src/main/resources/static/**
+[INFO] Exclude: **/istio/model/**
+[INFO] Exclude: **/consistency/entity/**
+[INFO] Exclude: **/*.txt
+[INFO] Exclude: **/*.factories
+[INFO] 29 resources included (use -debug for more details)
+[INFO] Rat check: Summary over all files. Unapproved: 0, unknown: 0, generated: 0, approved: 29 licenses.
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.7.8:report (default-report) @ nacos-console ---
+[INFO] Loading execution data file E:\my\gitee\nacos\console\target\jacoco.exec
+[INFO] Analyzed bundle 'nacos-console 1.4.0-SNAPSHOT' with 23 classes
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.7.8:report-integration (default-report-integration) @ nacos-console ---
+[INFO] Skipping JaCoCo execution due to missing execution data file.
+[INFO]
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ nacos-console ---
+[INFO] Installing E:\my\gitee\nacos\console\target\nacos-server.jar to D:\dev\rep\com\alibaba\nacos\nacos-console\1.4.0-SNAPSHOT\nacos-consol
+e-1.4.0-SNAPSHOT.jar
+[INFO] Installing E:\my\gitee\nacos\console\pom.xml to D:\dev\rep\com\alibaba\nacos\nacos-console\1.4.0-SNAPSHOT\nacos-console-1.4.0-SNAPSHOT
+.pom
+[INFO] Installing E:\my\gitee\nacos\console\target\nacos-server-sources.jar to D:\dev\rep\com\alibaba\nacos\nacos-console\1.4.0-SNAPSHOT\naco
+s-console-1.4.0-SNAPSHOT-sources.jar
+[INFO]
+[INFO] --------------------< com.alibaba.nacos:nacos-test >--------------------
+[INFO] Building nacos-test 1.4.0-SNAPSHOT 1.4.0-SNAPSHOT                [15/17]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ nacos-test ---
+[INFO] Deleting E:\my\gitee\nacos\test\target
+[INFO]
+[INFO] --- maven-enforcer-plugin:1.4.1:enforce (enforce-ban-circular-dependencies) @ nacos-test ---
+[INFO]
+[INFO] --- maven-checkstyle-plugin:3.1.1:check (validate) @ nacos-test ---
+[INFO] 寮?濮嬫鏌モ?︹??
+妫?鏌ュ畬鎴愩??
+[INFO] You have 0 Checkstyle violations.
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.7.8:prepare-agent (default-prepare-agent) @ nacos-test ---
+[INFO] argLine set to -javaagent:D:\\dev\\rep\\org\\jacoco\\org.jacoco.agent\\0.7.8\\org.jacoco.agent-0.7.8-runtime.jar=destfile=E:\\my\\gite
+e\\nacos\\test\\target\\jacoco.exec
+[INFO]
+[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ nacos-test ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory E:\my\gitee\nacos\test\src\main\resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.5.1:compile (default-compile) @ nacos-test ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- maven-resources-plugin:3.0.2:testResources (default-testResources) @ nacos-test ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 4 resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.5.1:testCompile (default-testCompile) @ nacos-test ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 54 source files to E:\my\gitee\nacos\test\target\test-classes
+[INFO] -------------------------------------------------------------
+[WARNING] COMPILATION WARNING :
+[INFO] -------------------------------------------------------------
+[WARNING] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/core/cluster/MemberLookup_ITCase.java:[30,30] com.alibaba.nacos.test中
+的com.alibaba.nacos.test.BaseTest已过时
+[WARNING] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/naming/NamingMaintainService_ITCase.java:[31,30] com.alibaba.nacos.tes
+t中的com.alibaba.nacos.test.BaseTest已过时
+[WARNING] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/core/cluster/MemberLookup_ITCase.java:[30,30] com.alibaba.nacos.test中
+的com.alibaba.nacos.test.BaseTest已过时
+[WARNING] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/naming/NamingMaintainService_ITCase.java:[31,30] com.alibaba.nacos.tes
+t中的com.alibaba.nacos.test.BaseTest已过时
+[INFO] 4 warnings
+[INFO] -------------------------------------------------------------
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR :
+[INFO] -------------------------------------------------------------
+[ERROR] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/core/auth/Role_ITCase.java:[18,25] 找不到符号
+  符号:   类 Nacos
+  位置: 程序包 com.alibaba.nacos
+[ERROR] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/naming/RestAPI_ITCase.java:[18,25] 找不到符号
+  符号:   类 Nacos
+  位置: 程序包 com.alibaba.nacos
+[ERROR] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/config/ConfigLongPollReturnChanges_CITCase.java:[18,25] 找不到符号
+  符号:   类 Nacos
+  位置: 程序包 com.alibaba.nacos
+[ERROR] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/naming/CPInstancesAPI_ITCase.java:[18,25] 找不到符号
+  符号:   类 Nacos
+  位置: 程序包 com.alibaba.nacos
+[ERROR] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/core/auth/NamingAuth_ITCase.java:[18,25] 找不到符号
+  符号:   类 Nacos
+  位置: 程序包 com.alibaba.nacos
+[ERROR] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/naming/MultiTenant_InstanceAPI_ITCase.java:[19,25] 找不到符号
+  符号:   类 Nacos
+  位置: 程序包 com.alibaba.nacos
+[ERROR] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/naming/RegisterInstance_ITCase.java:[18,25] 找不到符号
+  符号:   类 Nacos
+  位置: 程序包 com.alibaba.nacos
+[ERROR] /E:/my/gitee/nacos/test/src/test/java/com/alibaba/nacos/test/naming/MultiTenant_ITCase.java:[19,25] 找不到符号
+  符号:   类 Nacos
