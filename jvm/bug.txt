@@ -1,0 +1,386 @@
+大家好，我是烤鸭:
+	记一次项目无法访问的事件和处理。由于某个模块每隔几天就会出现无法访问，目前的最快捷的方法就是重启。
+	
+1. 现象
+	项目内日志打印正常，经过dubbo的rpc服务和接口调用正常。http接口无法访问。提示nginx 502。
+	
+2. 原因猜想
+	通常提示502 基本是项目本身原因。但是日志一直打印正常。
+	
+3. 逐一排除
+	检查了nginx，配置映射没有问题。
+	以及从服务器本身通过curl localhost:端口的方式调用接口，发现也是调用不通。
+	猜想有没有可能是连接被占满，无法创建新的连接。
+	查看服务器该端口的连接。
+	netstat -an |grep 项目端口 
+	netstat -an |grep 项目端口 |wc -l，发现大量 close_wait，如图所示。
+	查看所有的tcp 连接命令。
+	netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}' 
+	
+查看日志发现大量的关于redis的warn日志。
+[INFO] [lettuce-eventExecutorLoop-4-2] [2019-09-17 00:00:00,001]  info(106) | Reconnecting, last destination was /127.0.1.44:6380
+[INFO] [lettuce-eventExecutorLoop-4-3] [2019-09-17 00:00:00,001]  info(106) | Reconnecting, last destination was /127.0.1.44:6380
+[INFO] [lettuce-eventExecutorLoop-4-1] [2019-09-17 00:00:00,001]  info(106) | Reconnecting, last destination was /127.0.1.45:6379
+[INFO] [lettuce-nioEventLoop-6-2] [2019-09-17 00:00:00,004]  info(106) | [channel=0xaaed8169, /127.0.1.47:21559 -> /127.0.1.44:6379, epid=0xd06cd] Closing channel because endpoint is already closed
+[INFO] [lettuce-nioEventLoop-6-3] [2019-09-17 00:00:00,004]  info(106) | [channel=0x737b0658, /127.0.1.47:21560 -> /127.0.1.44:6379, epid=0xd06cf] Closing channel because endpoint is already closed
+[WARN] [lettuce-nioEventLoop-6-2] [2019-09-17 00:00:00,004]  warn(146) | Cannot reconnect: io.lettuce.core.RedisConnectionException: Connection closed prematurely
+io.lettuce.core.RedisConnectionException: Connection closed prematurely
+	at io.lettuce.core.PlainChannelInitializer$1.channelInactive(PlainChannelInitializer.java:80)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:245)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:231)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelInactive(AbstractChannelHandlerContext.java:224)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelInactive(DefaultChannelPipeline.java:1429)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:245)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelInactive(AbstractChannelHandlerContext.java:231)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelInactive(DefaultChannelPipeline.java:947)
+	at io.netty.channel.AbstractChannel$AbstractUnsafe$8.run(AbstractChannel.java:822)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:163)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:404)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:463)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:884)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.lang.Thread.run(Thread.java:748)
+	
+	猜测可能是跟redis有关。解决redis警告。
+	我们项目采用的redis的jar是下面这个。
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-data-redis</artifactId>
+		<version>2.0.5.RELEASE</version>
+	</dependency>
+	里面有两个数据源可以选择，默认是lettuce，使用jedis。
+	<dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-redis</artifactId>
+      <version>2.0.10.RELEASE</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jcl-over-slf4j</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.lettuce</groupId>
+      <artifactId>lettuce-core</artifactId>
+      <version>5.0.5.RELEASE</version>
+      <scope>compile</scope>
+    </dependency>
+	改为如下：
+	 <!--Redis-->
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-data-redis</artifactId>
+		<version>2.0.5.RELEASE</version>
+		<exclusions>
+			<exclusion>
+				<groupId>io.lettuce</groupId>
+				<artifactId>lettuce-core</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+	改完没几天，问题又复现了。发现不是这个导致的 close_wait过多。
+	其实没关系，这只是一个警告，理论上不会影响什么。可以看github上的issue。
+	https://github.com/lettuce-io/lettuce-core/issues/861
+	
+4.  深度挖掘
+当时并没有往OOM考虑，毕竟项目的rpc接口调用正常。
+生产环境是无法生成dump文件的，由于没权限，就在测试系统试了一下，想看看日志中有没有线程死锁或者其他情况。
+jmap -dump:file=/tmp/dump/heap.hprof [pid]
+使用 JProfiler 分析 dump日志
+jprofiler 下载地址：
+ 链接: https://pan.baidu.com/s/1WXaMUC7mJ3dH_WMc2kpDag 提取码: dcec 
+
+发现还是有点收获的。搜索 Out 关键字，发现了惊喜。也就解释了之前的现象。如图。
+
+又出现问题后让运维再次启动的时候加大了 -Xms512m -Xmx2g jvm内存，希望这次可以撑的多几天。
+启动后没多久让运维帮忙查看jvm内存情况，可以发现，没几个小时老年代的使用已经82%。
+jmap -heap 9782
+	
+Attaching to process ID 9782, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 25.191-b12
+
+using thread-local object allocation.
+Parallel GC with 4 thread(s)
+
+Heap Configuration:
+   MinHeapFreeRatio         = 0
+   MaxHeapFreeRatio         = 100
+   MaxHeapSize              = 2147483648 (2048.0MB)
+   NewSize                  = 715653120 (682.5MB)
+   MaxNewSize               = 715653120 (682.5MB)
+   OldSize                  = 1431830528 (1365.5MB)
+   NewRatio                 = 2
+   SurvivorRatio            = 8
+   MetaspaceSize            = 21807104 (20.796875MB)
+   CompressedClassSpaceSize = 1073741824 (1024.0MB)
+   MaxMetaspaceSize         = 17592186044415 MB
+   G1HeapRegionSize         = 0 (0.0MB)
+
+Heap Usage:
+PS Young Generation
+Eden Space:
+   capacity = 603455488 (575.5MB)
+   used     = 178326152 (170.06507110595703MB)
+   free     = 425129336 (405.43492889404297MB)
+   29.55083772475361% used
+From Space:
+   capacity = 57671680 (55.0MB)
+   used     = 7215904 (6.881622314453125MB)
+   free     = 50455776 (48.118377685546875MB)
+   12.512040571732955% used
+To Space:
+   capacity = 54525952 (52.0MB)
+   used     = 0 (0.0MB)
+   free     = 54525952 (52.0MB)
+   0.0% used
+PS Old Generation
+   capacity = 1431830528 (1365.5MB)
+   used     = 1177733640 (1123.1743240356445MB)
+   free     = 254096888 (242.32567596435547MB)
+   82.25370370088939% used
+
+43209 interned Strings occupying 4908648 bytes.
+
+再去生产日志中搜索 'OutOfMemoryError' 附近的内容，定位原因。
+两处地方：
+	1.	activeMq像队列中推送的时候：ActiveMQSession.send
+	2.	使用poi导出：org.apache.poi.POIXMLDocument.write
+详细日志如下：
+
+org.springframework.web.util.NestedServletException: Handler dispatch failed; nested exception is java.lang.OutOfMemoryError: Java heap space
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1006)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:925)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:974)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:877)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:661)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:851)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:742)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)
+--
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:800)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:806)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1498)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.OutOfMemoryError: Java heap space
+	at org.apache.activemq.util.ByteArrayOutputStream.checkCapacity(ByteArrayOutputStream.java:59)
+	at org.apache.activemq.util.ByteArrayOutputStream.write(ByteArrayOutputStream.java:48)
+	at java.io.DataOutputStream.write(DataOutputStream.java:107)
+	at java.io.DataOutputStream.writeUTF(DataOutputStream.java:401)
+	at java.io.DataOutputStream.writeUTF(DataOutputStream.java:323)
+	at org.apache.activemq.util.MarshallingSupport.marshalPrimitiveMap(MarshallingSupport.java:62)
+	at org.apache.activemq.command.ActiveMQMapMessage.storeContent(ActiveMQMapMessage.java:156)
+	at org.apache.activemq.command.ActiveMQMapMessage.copy(ActiveMQMapMessage.java:121)
+	at org.apache.activemq.command.ActiveMQMapMessage.copy(ActiveMQMapMessage.java:116)
+	at org.apache.activemq.ActiveMQSession.send(ActiveMQSession.java:1949)
+--
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:688)
+	at com.etc.service.impl.SigningServiceImpl$$EnhancerBySpringCGLIB$$e7423006.executeSign(<generated>)
+	at com.etc.controller.CarSignedController.executeSign(CarSignedController.java:246)
+	at sun.reflect.GeneratedMethodAccessor295.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:209)
+	
+2019-10-16 16:53:47,262 [http-nio-9010-exec-47] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Looking up handler method for path /highway/car-signed/querySignList
+2019-10-16 16:53:47,273 [http-nio-9010-exec-9] ERROR o.a.c.c.C.[.[localhost].[/].[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed; nested exception is java.lang.OutOfMemoryError: Java heap space] with root cause
+java.lang.OutOfMemoryError: Java heap space
+	at org.apache.activemq.util.ByteArrayOutputStream.checkCapacity(ByteArrayOutputStream.java:59)
+	at org.apache.activemq.util.ByteArrayOutputStream.write(ByteArrayOutputStream.java:48)
+	at java.io.DataOutputStream.write(DataOutputStream.java:107)
+	at java.io.DataOutputStream.writeUTF(DataOutputStream.java:401)
+	at java.io.DataOutputStream.writeUTF(DataOutputStream.java:323)
+	at org.apache.activemq.util.MarshallingSupport.marshalPrimitiveMap(MarshallingSupport.java:62)
+	at org.apache.activemq.command.ActiveMQMapMessage.storeContent(ActiveMQMapMessage.java:156)
+	at org.apache.activemq.command.ActiveMQMapMessage.copy(ActiveMQMapMessage.java:121)
+	at org.apache.activemq.command.ActiveMQMapMessage.copy(ActiveMQMapMessage.java:116)
+	at org.apache.activemq.ActiveMQSession.send(ActiveMQSession.java:1949)
+	at org.apache.activemq.ActiveMQMessageProducer.send(ActiveMQMessageProducer.java:288)
+	at org.apache.activemq.ActiveMQMessageProducer.send(ActiveMQMessageProducer.java:223)
+	at org.apache.activemq.ActiveMQMessageProducerSupport.send(ActiveMQMessageProducerSupport.java:241)
+	at com.etc.util.MQProviderUtil.sendMq(MQProviderUtil.java:61)
+	at com.etc.util.servlet.ZjSigned.sendImageToZg(ZjSigned.java:246)
+	at com.etc.util.handler.ZjSignedHandler.signed(ZjSignedHandler.java:102)
+	at com.etc.service.impl.SigningServiceImpl.executeSign(SigningServiceImpl.java:298)
+	at com.etc.service.impl.SigningServiceImpl$$FastClassBySpringCGLIB$$8d7e3c5e.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:746)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionInterceptor$$Lambda$484/819196473.proceedWithInvocation(Unknown Source)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:294)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:98)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:688)
+	at com.etc.service.impl.SigningServiceImpl$$EnhancerBySpringCGLIB$$e7423006.executeSign(<generated>)
+	at com.etc.controller.CarSignedController.executeSign(CarSignedController.java:246)
+	at sun.reflect.GeneratedMethodAccessor295.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:209)
+	
+5.	分析代码
+既然找到问题了，就去分析下代码吧。
+1. 	poi导出的伪代码如下:
+	List<CarSigned> carSignList = signingService.exportSignList(carSignedRequest);
+	XSSFWorkbook workBook = new XSSFWorkbook();
+	// 创建一个工作薄对象2007
+	XSSFSheet xssfSheet = workBook.createSheet();
+	String[] headers = {""};
+
+	int rowIndex = 0;
+	Row row = xssfSheet.createRow(rowIndex++);
+	for (int i = 0; i < headers.length; i++) {
+		row.createCell(i).setCellValue(headers[i]);
+	}
+	for (CarSigned carSignedListDto : carSignList) {
+		row = xssfSheet.createRow(rowIndex++);
+		// 车牌号
+		row.createCell(1).setCellValue(carSignedListDto.getVehicleNo());
+
+	}
+	String date = new SimpleDateFormat("yyyy_MM_dd").format(new Date());
+	String codefilename = "";
+	String msie = "MSIE";
+	String fileNames = "filename" + date + ".xlsx";
+	String agent = request.getHeader("USER-AGENT");
+	boolean flag = (null != agent && -1 != agent.indexOf(msie) || null != agent && -1 != agent.indexOf("Trident"));
+	if (flag) {
+		String name = java.net.URLEncoder.encode(fileNames, "UTF-8");
+		// IE
+		codefilename = name;
+	} else {
+		// chrome,firefog
+		codefilename = fileNames;
+	}
+	response.setHeader("Content-Disposition",
+			"attachment;filename=" + new String(codefilename.getBytes("UTF-8"), "iso8859-1"));
+	// 固定格式
+	response.setContentType("application/ynd.ms-excel;charset=UTF-8");
+	OutputStream out = response.getOutputStream();
+	workBook.write(out);
+	out.flush();
+	out.close();
+说实话，和正常的导出没什么区别，没看出有什么问题，导出的量不到10w，理论上也不会OOME。
+
+2.  activemq工具类伪代码
+
+package com.xxx.util;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.jms.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * mq 工具1
+ * @author wu
+ *
+ */
+public class MQProviderUtil {
+	
+    private static final Logger logger = LoggerFactory.getLogger(MQProviderUtil.class);
+
+	public static void sendMq(Map<String, String> map,String user,
+				String password,String brokerUrl,String topic) {
+
+		// 连接
+		Connection connection = null;
+		// 会话 发送或者接收消息的线程
+		Session session = null;
+		// 消息的目的地
+		Destination destination;
+		// 消息生产者
+		MessageProducer messageProducer;
+		// 实例化连接工厂
+        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(user,password,brokerUrl);
+
+		try {
+			// 通过连接工厂获取连接
+			connection = connectionFactory.createConnection();
+			// 启动连接
+			connection.start();
+			// 创建session
+			session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+			// 创建一个叫sendFile的消息队列
+			destination = session.createQueue(topic);
+			logger.info(" 创建一个叫"+topic+"的消息队列");
+			// 创建消息生产者
+			messageProducer = session.createProducer(destination);
+			MapMessage mapMsg = session.createMapMessage();  
+			Set <String> set = map.keySet();
+			for(String key:set){
+		         String value = map.get(key);
+		         mapMsg.setString(key,value);
+		    }
+			
+	     /*   mapMsg.setString("name", "李寻欢1");
+	        mapMsg.setBoolean("IsHero", true);
+	        mapMsg.setInt("age", 35);*/
+			
+			//通过消息生产者发出消息
+			messageProducer.send(mapMsg);
+			session.commit();
+		} catch (Exception e) {
+			logger.info("activeMq消息队列异常");
+			e.printStackTrace();
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+					session.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) throws InterruptedException {
+        for (int i = 0; i < 3000; i++) {
+            Map<String,String> map  =  new HashMap<>();
+            map.put("id","123");
+            sendMq(map,"admin","admin","tcp://127.0.0.1:61616","signed");
+        }
+	}
+}
+单独看这段代码也没有问题，运行main方法也能跑。
+唯一有点问题的就是代码里每次调用mq的地方都是调用 MQProviderUtil.sendMq 方法。
+理论上实例化连接工厂只需要在项目初始化的时候创建一次，但是他每次调用都会创建。
+猜测可能是调用过于频繁，导致工厂对象来不及回收。
+activeMQ和springboot 可以参考这篇文章:
+https://segmentfault.com/a/1190000014108398
+本地启动项目，模拟线上并发量 *2，实测没问题是来得及回收的，如图JVM 回收曲线交替执行正常。
+
+由于不是我们项目组，他们一直说是导出导致的，业务人员同时导出量过大，由于后台生成的excel时候没有采用分页查询，导致OOM。
+一次导出的数据大概在10W左右，除非恶意访问，我觉得不是导出导致的OOM，或者说不是导出的产生的OOM，是导出的时候把这个OOM暴露出来了。
+后来我又去activemq的机器查看了内存和cpu，一切正常。
+日志有时候会warn：但是问题不大
+Channel was inactive for too (>30000) long: tcp://127.0.0.54:5820 | org.apache.activemq.broker.TransportConnection.Transport | ActiveMQ InactivityMonitor Worker
+后来又查了mq的版本为 apache-activemq-5.13.1。2016年的版，官方写的多线程有可能是导致OOM的。
+http://activemq.apache.org/how-to-deal-with-large-number-of-threads-in-clients.html
+
+后来换了个导出的工具类，就没有OOM的问题了，好TM尴尬....
+
+
+
+
+
+
+
+
+
