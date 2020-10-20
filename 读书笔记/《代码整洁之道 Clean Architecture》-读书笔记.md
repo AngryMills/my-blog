@@ -86,6 +86,64 @@ C、由f创建的对象、作为参数传递给f的对象、由C的实体变量�
 
 # 第七章 错误处理
 
+**使用异常而非错误码** （内部服务调用可以使用抛出异常，对外提供的接口最好还是返回错误码）
+
+**先写try-catch-finally语句** 定义范围，方便满足测试
+
+**使用不可控异常** checked exception（可控异常），异常和方法绑定，但是违反了开闭原则。如果在方法中抛出课可控异常，需要在抛出异常处之间的每个方法签名中声明该异常。如果写一套关键代码库，可控异常有用，必须捕获异常。但一般应用开发，依赖成本高于收益。
+
+**给出异常发生的环境说明** 记录错误的堆栈信息
+
+**依调用者需要定义异常类**  封装第三方调用api，确保返回的异常类型，简化代码
+
+**定义常规流程** 特例模式，创建一个类或配置一个对象处理特例，就不用应付异常行为了。比如下面的代码，处理业务逻辑没有餐食消耗的时候，总账加上补贴。
+
+```
+try{
+	MealExpenses expenses.getTotal; = expenseReportDAO.getMeals();
+	m_total = expenses.getTotal;
+}catch(MealExpensesNotFound e){
+	m_total = getMealPerDiem();
+}
+```
+
+应该把catch和业务代码分开。定义特例的类。
+
+```
+public class PerDiemMealExpenses implements MealExpenses{
+	public int getTotal(){
+		// renturn the per diem default
+	}
+}
+```
+
+**别返回null值** 避免NPE的最好方式，不返回null，返回空集合或者空对象(实际场景协同开发时很难保证)
+
+**别传递null值** 避免NPE和其他运行时问题
+
+# 第八章 边界
+
+**使用第三方代码** 比如 java.util.Map，有一个对象想用Map做数据结构，还不要暴露细节(隐藏Map)，可以写成下面这样。
+
+```
+public class Sensors{
+	private Map sensors = new HashMap();
+	public Sensor getById(String id){
+		return (Sensor)sensors.get(id);
+	}
+}
+```
+
+**浏览和学习边界** 
+
+**学习测试好处不只是免费** 确保第三方程序包正常工作
+
+**使用尚不存在的代码** 先定义API，后完成代码细节
+
+**整洁的边界** 通过引入第三方边界接口的位置管理第三方边界。比如 Map 包装 或者 Adapter 模式。
+
+# 第九章 单元测试
+
 
 
 
