@@ -1,0 +1,157 @@
+16:47:56,312 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-INFO-ASYNC] - Worker thread will flush remaining events before exiting. 
+16:47:56,315 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-INFO-ASYNC] - Queue flush finished successfully within timeout.
+16:47:56,315 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-ERROR-ASYNC] - Worker thread will flush remaining events before exiting. 
+16:47:56,316 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-ERROR-ASYNC] - Queue flush finished successfully within timeout.
+16:47:56,316 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SERVICE-INFO-ASYNC] - Worker thread will flush remaining events before exiting. 
+16:47:56,316 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SERVICE-INFO-ASYNC] - Queue flush finished successfully within timeout.
+16:47:56,317 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SERVICE-ERROR-ASYNC] - Worker thread will flush remaining events before exiting. 
+16:47:56,317 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SERVICE-ERROR-ASYNC] - Queue flush finished successfully within timeout.
+16:47:56,317 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SQL-INFO-ASYNC] - Worker thread will flush remaining events before exiting. 
+16:47:56,317 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SQL-INFO-ASYNC] - Queue flush finished successfully within timeout.
+16:47:56,317 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SQL-ERROR-ASYNC] - Worker thread will flush remaining events before exiting. 
+16:47:56,318 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SQL-ERROR-ASYNC] - Queue flush finished successfully within timeout.
+16:47:56,318 |-INFO in ch.qos.logback.core.joran.spi.ConfigurationWatchList@3a079870 - URL [jar:file:/data/holmes-agent/reporter/holmes-agent-reporter-flume.jar!/logback.xml] is not of type file
+16:47:56,330 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
+16:47:56,330 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [net.logstash.logback.appender.LogstashTcpSocketAppender]
+16:47:56,330 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-INFO]
+16:47:56,340 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [net.logstash.logback.appender.LogstashTcpSocketAppender]
+16:47:56,341 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-SERVICE-INFO]
+16:47:56,341 |-INFO in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-INFO] - Log destination mapi-logstash.yiche.com:4570: connection established.
+16:47:56,350 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [net.logstash.logback.appender.LogstashTcpSocketAppender]
+16:47:56,350 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-SQL-INFO]
+16:47:56,351 |-INFO in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-SERVICE-INFO] - Log destination mapi-logstash.yiche.com:4570: connection established.
+16:47:56,360 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [net.logstash.logback.appender.LogstashTcpSocketAppender]
+16:47:56,360 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-ERROR]
+16:47:56,361 |-INFO in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-SQL-INFO] - Log destination mapi-logstash.yiche.com:4570: connection established.
+16:47:56,369 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [net.logstash.logback.appender.LogstashTcpSocketAppender]
+16:47:56,369 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-SERVICE-ERROR]
+16:47:56,369 |-INFO in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-ERROR] - Log destination mapi-logstash.yiche.com:4570: connection established.
+16:47:56,379 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [net.logstash.logback.appender.LogstashTcpSocketAppender]
+16:47:56,379 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-SQL-ERROR]
+16:47:56,379 |-INFO in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-SERVICE-ERROR] - Log destination mapi-logstash.yiche.com:4570: connection established.
+16:47:56,388 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+16:47:56,388 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-INFO-ASYNC]
+16:47:56,389 |-INFO in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-SQL-ERROR] - Log destination mapi-logstash.yiche.com:4570: connection established.
+16:47:56,389 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-INFO] to ch.qos.logback.classic.AsyncAppender[SLEUTH-INFO-ASYNC]
+16:47:56,389 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-INFO-ASYNC] - Attaching appender named [SLEUTH-INFO] to AsyncAppender.
+16:47:56,389 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-INFO-ASYNC] - Setting discardingThreshold to 20
+16:47:56,390 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+16:47:56,390 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-SERVICE-INFO-ASYNC]
+16:47:56,391 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-SERVICE-INFO] to ch.qos.logback.classic.AsyncAppender[SLEUTH-SERVICE-INFO-ASYNC]
+16:47:56,391 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SERVICE-INFO-ASYNC] - Attaching appender named [SLEUTH-SERVICE-INFO] to AsyncAppender.
+16:47:56,391 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SERVICE-INFO-ASYNC] - Setting discardingThreshold to 20
+16:47:56,391 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+16:47:56,391 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-SQL-INFO-ASYNC]
+16:47:56,393 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-SQL-INFO] to ch.qos.logback.classic.AsyncAppender[SLEUTH-SQL-INFO-ASYNC]
+16:47:56,393 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SQL-INFO-ASYNC] - Attaching appender named [SLEUTH-SQL-INFO] to AsyncAppender.
+16:47:56,393 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SQL-INFO-ASYNC] - Setting discardingThreshold to 20
+16:47:56,393 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+16:47:56,393 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-ERROR-ASYNC]
+16:47:56,394 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-ERROR] to ch.qos.logback.classic.AsyncAppender[SLEUTH-ERROR-ASYNC]
+16:47:56,394 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-ERROR-ASYNC] - Attaching appender named [SLEUTH-ERROR] to AsyncAppender.
+16:47:56,394 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-ERROR-ASYNC] - Setting discardingThreshold to 20
+16:47:56,394 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+16:47:56,395 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-SERVICE-ERROR-ASYNC]
+16:47:56,396 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-SERVICE-ERROR] to ch.qos.logback.classic.AsyncAppender[SLEUTH-SERVICE-ERROR-ASYNC]
+16:47:56,396 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SERVICE-ERROR-ASYNC] - Attaching appender named [SLEUTH-SERVICE-ERROR] to AsyncAppender.
+16:47:56,396 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SERVICE-ERROR-ASYNC] - Setting discardingThreshold to 20
+16:47:56,396 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+16:47:56,396 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SLEUTH-SQL-ERROR-ASYNC]
+16:47:56,397 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-SQL-ERROR] to ch.qos.logback.classic.AsyncAppender[SLEUTH-SQL-ERROR-ASYNC]
+16:47:56,397 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SQL-ERROR-ASYNC] - Attaching appender named [SLEUTH-SQL-ERROR] to AsyncAppender.
+16:47:56,397 |-INFO in ch.qos.logback.classic.AsyncAppender[SLEUTH-SQL-ERROR-ASYNC] - Setting discardingThreshold to 20
+16:47:56,398 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [mapi-sleuth-log] to INFO
+16:47:56,398 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting additivity of logger [mapi-sleuth-log] to false
+16:47:56,398 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-INFO-ASYNC] to Logger[mapi-sleuth-log]
+16:47:56,398 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-ERROR-ASYNC] to Logger[mapi-sleuth-log]
+16:47:56,398 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [mapi-sleuth-service-log] to INFO
+16:47:56,398 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting additivity of logger [mapi-sleuth-service-log] to false
+16:47:56,398 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-SERVICE-INFO-ASYNC] to Logger[mapi-sleuth-service-log]
+16:47:56,398 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-SERVICE-ERROR-ASYNC] to Logger[mapi-sleuth-service-log]
+16:47:56,398 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [mapi-sleuth-sql-log] to INFO
+16:47:56,398 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting additivity of logger [mapi-sleuth-sql-log] to false
+16:47:56,398 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-SQL-INFO-ASYNC] to Logger[mapi-sleuth-sql-log]
+16:47:56,399 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SLEUTH-SQL-ERROR-ASYNC] to Logger[mapi-sleuth-sql-log]
+16:47:56,399 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+16:47:56,399 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@3b2cf7ab - Registering current configuration as safe fallback point
+
+[ARCH-HOLMES][2020-10-26 16:47:56:408] ===========================>initialize::finish
+[ARCH-HOLMES][2020-10-26 16:47:57:737] ===========================>premain::finish
+16:47:58.310 [main] INFO org.springframework.core.KotlinDetector - Kotlin reflection implementation not found at runtime, related features won't be available.
+2020-10-26 16:48:01.058 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration$$EnhancerBySpringCGLIB$$b9ef7406] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.1.6.RELEASE)
+
+2020-10-26 16:48:01.539 [main] INFO  o.s.c.a.n.c.NacosPropertySourceBuilder - Loading nacos data, dataId: 'photo-api-baojia-sleuth.properties', group: 'photo-sleuth'
+2020-10-26 16:48:01.543 [main] INFO  o.s.c.a.n.c.NacosPropertySourceBuilder - Loading nacos data, dataId: 'photo-api-baojia-test.yml', group: 'photo-api'
+2020-10-26 16:48:01.560 [main] INFO  o.s.c.b.c.PropertySourceBootstrapConfiguration - Located property source: CompositePropertySource {name='NACOS', propertySources=[NacosPropertySource {name='photo-api-baojia-test.yml'}, NacosPropertySource {name='photo-api-baojia-sleuth.properties'}]}
+2020-10-26 16:48:01.571 [main] INFO  com.yiche.PhotoApiBaojiaApplication - The following profiles are active: redis,dev
+2020-10-26 16:48:04.381 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode!
+2020-10-26 16:48:04.391 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2020-10-26 16:48:04.680 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 234ms. Found 0 repository interfaces.
+2020-10-26 16:48:04.870 [main] WARN  o.s.boot.actuate.endpoint.EndpointId - Endpoint ID 'nacos-config' contains invalid characters, please migrate to a valid format.
+2020-10-26 16:48:05.029 [main] WARN  o.s.boot.actuate.endpoint.EndpointId - Endpoint ID 'service-registry' contains invalid characters, please migrate to a valid format.
+2020-10-26 16:48:05.695 [main] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=15cc5b62-c6a9-3de1-a186-b43746b74d4d
+2020-10-26 16:48:05.936 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$9dd57109] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-10-26 16:48:06.113 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'com.yiche.holmes.spring.boot.autoconfigure.starter.HolmesMetricsAutoConfiguration' of type [com.yiche.holmes.spring.boot.autoconfigure.starter.HolmesMetricsAutoConfiguration$$EnhancerBySpringCGLIB$$a2682166] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-10-26 16:48:06.125 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'customRegistryConfig' of type [com.yiche.holmes.spring.boot.autoconfigure.metrics.registry.HolmesRegistryConfig$$Lambda$276/914718002] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-10-26 16:48:06.158 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'homelessMeterRegistry' of type [com.yiche.holmes.spring.boot.autoconfigure.metrics.registry.HolmesMeterRegistry] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-10-26 16:48:06.189 [main] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration$$EnhancerBySpringCGLIB$$b9ef7406] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+16:48:06,346 |-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-INFO] - Log destination mapi-logstash.yiche.com:4570: Waiting 19996ms before attempting reconnection.
+16:48:06,353 |-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-SERVICE-INFO] - Log destination mapi-logstash.yiche.com:4570: Waiting 19997ms before attempting reconnection.
+16:48:06,362 |-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-SQL-INFO] - Log destination mapi-logstash.yiche.com:4570: Waiting 19998ms before attempting reconnection.
+16:48:06,371 |-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-ERROR] - Log destination mapi-logstash.yiche.com:4570: Waiting 19998ms before attempting reconnection.
+16:48:06,380 |-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-SERVICE-ERROR] - Log destination mapi-logstash.yiche.com:4570: Waiting 19999ms before attempting reconnection.
+16:48:06,390 |-WARN in net.logstash.logback.appender.LogstashTcpSocketAppender[SLEUTH-SQL-ERROR] - Log destination mapi-logstash.yiche.com:4570: Waiting 19998ms before attempting reconnection.
+2020-10-26 16:48:06.668 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+Oct 26, 2020 4:48:06 PM org.apache.coyote.AbstractProtocol init
+INFO: Initializing ProtocolHandler ["http-nio-8080"]
+Oct 26, 2020 4:48:06 PM org.apache.catalina.core.StandardService startInternal
+INFO: Starting service [Tomcat]
+Oct 26, 2020 4:48:06 PM org.apache.catalina.core.StandardEngine startInternal
+INFO: Starting Servlet engine: [Apache Tomcat/9.0.21]
+Oct 26, 2020 4:48:06 PM org.apache.catalina.core.ApplicationContext log
+INFO: Initializing Spring embedded WebApplicationContext
+2020-10-26 16:48:06.906 [main] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5287 ms
+2020-10-26 16:48:07.102 [main] WARN  c.n.c.sources.URLConfigurationSource - No URLs will be polled as dynamic configuration sources.
+2020-10-26 16:48:07.103 [main] INFO  c.n.c.sources.URLConfigurationSource - To enable URLs as dynamic configuration sources, define System property archaius.configurationSource.additionalUrls or make config.properties available on classpath.
+2020-10-26 16:48:07.127 [main] INFO  c.n.config.DynamicPropertyFactory - DynamicPropertyFactory is initialized with configuration sources: com.netflix.config.ConcurrentCompositeConfiguration@6dbdeb69
+2020-10-26 16:48:08.994 [main] INFO  o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService
+2020-10-26 16:48:10.193 [main] WARN  c.n.c.sources.URLConfigurationSource - No URLs will be polled as dynamic configuration sources.
+2020-10-26 16:48:10.193 [main] INFO  c.n.c.sources.URLConfigurationSource - To enable URLs as dynamic configuration sources, define System property archaius.configurationSource.additionalUrls or make config.properties available on classpath.
+2020-10-26 16:48:10.666 [main] INFO  o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2020-10-26 16:48:11.816 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Creating filter chain: org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest$EndpointRequestMatcher@299cddbf, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@31beb0d0, org.springframework.security.web.context.SecurityContextPersistenceFilter@570ede3b, org.springframework.security.web.header.HeaderWriterFilter@6da86e98, org.springframework.security.web.csrf.CsrfFilter@44f88149, org.springframework.security.web.authentication.logout.LogoutFilter@50bc0bbd, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@5f5fb335, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@25630ede, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@206de1f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@13da6bc9, org.springframework.security.web.session.SessionManagementFilter@476dc0af, org.springframework.security.web.access.ExceptionTranslationFilter@4b1ad751, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@701bd6e8]
+2020-10-26 16:48:12.116 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 21 endpoint(s) beneath base path '/actuator'
+2020-10-26 16:48:12.532 [main] INFO  o.s.c.n.eureka.InstanceInfoFactory - Setting initial instance status as: STARTING
+2020-10-26 16:48:12.594 [main] INFO  c.netflix.discovery.DiscoveryClient - Initializing Eureka in region us-east-1
+2020-10-26 16:48:12.911 [main] INFO  c.n.d.p.DiscoveryJerseyProvider - Using JSON encoding codec LegacyJacksonJson
+2020-10-26 16:48:12.912 [main] INFO  c.n.d.p.DiscoveryJerseyProvider - Using JSON decoding codec LegacyJacksonJson
+2020-10-26 16:48:13.292 [main] INFO  c.n.d.p.DiscoveryJerseyProvider - Using XML encoding codec XStreamXml
+2020-10-26 16:48:13.293 [main] INFO  c.n.d.p.DiscoveryJerseyProvider - Using XML decoding codec XStreamXml
+2020-10-26 16:48:13.682 [main] INFO  c.n.d.s.r.aws.ConfigClusterResolver - Resolving eureka endpoints via configuration
+2020-10-26 16:48:13.714 [main] INFO  c.netflix.discovery.DiscoveryClient - Disable delta property : false
+2020-10-26 16:48:13.715 [main] INFO  c.netflix.discovery.DiscoveryClient - Single vip registry refresh property : null
+2020-10-26 16:48:13.715 [main] INFO  c.netflix.discovery.DiscoveryClient - Force full registry fetch : false
+2020-10-26 16:48:13.715 [main] INFO  c.netflix.discovery.DiscoveryClient - Application is null : false
+2020-10-26 16:48:13.715 [main] INFO  c.netflix.discovery.DiscoveryClient - Registered Applications size is zero : true
+2020-10-26 16:48:13.715 [main] INFO  c.netflix.discovery.DiscoveryClient - Application version is -1: true
+2020-10-26 16:48:13.715 [main] INFO  c.netflix.discovery.DiscoveryClient - Getting all instance registry info from the eureka server
+2020-10-26 16:48:14.053 [main] INFO  c.netflix.discovery.DiscoveryClient - The response status is 200
+2020-10-26 16:48:14.058 [main] INFO  c.netflix.discovery.DiscoveryClient - Starting heartbeat executor: renew interval is: 10
+2020-10-26 16:48:14.061 [main] INFO  c.n.discovery.InstanceInfoReplicator - InstanceInfoReplicator onDemand update allowed rate per min is 6
+2020-10-26 16:48:14.066 [main] INFO  c.netflix.discovery.DiscoveryClient - Discovery Client initialized at timestamp 1603702094063 with initial instances count: 167
+2020-10-26 16:48:14.069 [main] INFO  o.s.c.n.e.s.EurekaServiceRegistry - Registering application PHOTO-API-BAOJIA with eureka with status UP
+2020-10-26 16:48:14.070 [main] INFO  c.netflix.discovery.DiscoveryClient - Saw local status change event StatusChangeEvent [timestamp=1603702094070, current=UP, previous=STARTING]
+2020-10-26 16:48:14.071 [main] WARN  c.n.discovery.InstanceInfoReplicator - Ignoring onDemand update due to rate limiter
+Oct 26, 2020 4:48:14 PM org.apache.coyote.AbstractProtocol start
+INFO: Starting ProtocolHandler ["http-nio-8080"]
+2020-10-26 16:48:14.132 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2020-10-26 16:48:14.133 [main] INFO  o.s.c.n.e.s.EurekaAutoServiceRegistration - Updating port to 8080
+2020-10-26 16:48:14.135 [main] INFO  com.yiche.PhotoApiBaojiaApplication - Started PhotoApiBaojiaApplication in 15.73 seconds (JVM running for 20.509)
+2020-10-26 16:48:14.147 [DiscoveryClient-InstanceInfoReplicator-0] INFO  c.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
