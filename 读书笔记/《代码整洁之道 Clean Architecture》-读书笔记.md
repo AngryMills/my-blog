@@ -340,7 +340,7 @@ public synchronized String nextUrlOrNull){
 }
 ```
 
-ThreadJinglePoing 类可以多种实现，生产环境什么都不做，测试环境加随机数、睡眠或者让步。重点是让不同线程异动。
+ThreadJinglePoing 类可以多种实现，生产环境什么都不做，测试环境加随机数、睡眠或者让步。重点是让不同线程异动。1
 
 # 第十四章 逐步改进
 
