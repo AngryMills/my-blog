@@ -32,4 +32,5 @@ command命令返回的是当前redis所能执行的命令和对应的账号权�
 
 ![1](.\3.png)
 
-getAsyncConnection —> LettuceConnection.getAsyncConnection
+getAsyncConnection —> LettuceConnection.getAsyncConnection —> LettuceConnectionProvider.getConnection
+
