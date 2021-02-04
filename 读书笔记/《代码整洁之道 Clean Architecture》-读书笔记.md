@@ -437,7 +437,198 @@ junit的源码地址，感兴趣的可以看下：https://github.com/junit-team/
 
 - 特性依恋(G14)：没有必要在三方类中定义某个类对象，(会暴露类的内部情形)，破坏了面对对象原则。
 
-- 
+- 选择算子参数：尽量不使用选择函数的参数，比如 true/false、枚举、整数等，比如 true/fasle 在整个funcation里做条件判断，不如 true，function A/false function B 这样，拆分单独的方法
+
+- 晦涩的意图：短小节凑的代码不一定易懂，比如下面。
+
+  ```
+  public int m_otCalc(){
+  	return iThsWkd * iThsRte + (int) Math.round(0.5 * iThsRte + Math.max(0, iThsWkd - 400))
+  }
+  ```
+
+- 位置错误的权责：代码应该放在读者自然而然期待它所在的地方。比如一般写的配置类都会放到 config 包下面。
+
+- 不恰当的静态方法：
+  比如 Math.max(double a,double b) 是个很好的静态方法，不在单个实体上操作。通常倾向于选用非静态方法。如果有疑问就用非静态函数。如果使用静态函数，确保不要有多态行为的机会。
+
+-  使用解释性变量：比如下面代码，如果用两个中间变量定义一下，更容易理解。
+
+  ```
+  Matcher match = headerPattern.matcher(line);
+  if(match.find())
+  {
+  	String key = match.group(1);
+  	String value = match.group(2);
+  	headers.put(key,toLowerCase(), value);
+  }
+  ```
+
+- 函数名称应该表达其行为：比如下面函数 看不出函数行为，应该改成 addDaysTo 或 increaseByDays
+
+  ```
+  Date newDate = date.add(5);
+  ```
+
+- 理解算法：不仅要通过全部测试，还要找出最佳方案。
+
+- 把逻辑依赖改为物理依赖：比如下面的类是一个统计报表的类，PAGE_SIZE 不应该是该类中的变量，这是一种错误的逻辑依赖，应该改为物理依赖，通过 HourlyReport 中名为 getMaxPageSize()方法物理化这种依赖。
+
+  ```
+  public class HourlyReporter{
+  	private HourlyReportFormatter formatter;
+  	private List<LineItem> page;
+  	private final int PAGE_SIZE = 55;
+  	
+  	public HourlyReporter(HourlyReportFormatter formatter){
+  		this.formatter = formatter;
+  		page = new ArrayList<LineItem>();
+  	}
+  	//...
+  }
+  ```
+
+- 用多态替代 If/Else 或 Switch/Case：
+  对于给定的选择类型，不应有多于一个switch 语句。在那个switch语句中的多个case，必须创建多态对象，取代系统中其他类似switch语句。可以使用策略模式。
+
+- 遵循标准约定：团队的编码标准。
+
+- 用命令常量替代魔术数：定义常量代替魔法值
+
+- 准确：比如对待金额的地方，需要明确保留几位(使用 Bigdecimal)
+
+- 结构甚于约定：基类的抽象方法比良好命名的枚举强(抽象方法必须按照基类的实现)
+
+- 封装条件：if(shouldBeDeleted(timer)) 要好于 if(timer.hasExpired()) && !(timer.isRecurrent())
+
+- 避免否定性条件：if(buffer.shouldCompact()) 要好于 if(!buffer.shouldNotCompact())
+
+- 函数只做一件事：一个 “支付函数” 需要做，遍历雇员 -> 检查是否给雇员工资 -> 支付薪水，改成 3 个函数。
+
+- 掩蔽时序耦合：函数的调用顺序和放置的地方相关联。
+
+- 别随意：构建代码需要理由，而且理由应与代码结构相契合。比如 VariableExpandingWidgetRoot 作为公共的工具类，不应该定义在 AliasLinkWidget 类里。
+
+  ```
+  public class AliasLinkWidget extends ParentWidget{
+  	public static class VariableExpandingWidgetRoot{
+  		//...
+  	}
+  }
+  ```
+
+- 封装边界条件：把处理边界条件的代码集中到一处。下面的代码中 level + 1 出现了两次，封装到局部变量。
+
+  ```
+  if(level + 1 < tags.length){
+  	parts = new Parse(body, tags, level + 1,offset + endTag);
+  }
+  ```
+
+- 函数应该只在一个抽象层级上：函数中的语句应该在同一抽象层级上，该层级应该是函数名所示操作的下一层。下面方法混杂了至少两个抽象层级，第一个是横线有尺寸，第二个是hr标记自身的语法。
+
+  ```
+  public String render(){
+  	StringBuffer html = new StringBuffer("<hr");
+  	if(size > 0){
+  		html.append(" size=\"").append(size + 1).append("\"");
+  		html.append(“>”);
+  		return html.toString();
+  	}
+  }
+  ```
+
+  重构后：
+
+  ```
+  public String render(){
+  	HtmlTag hr = new HtmlTag("hr");
+  	if (extraDashes > 0){
+  		hr.addAttribute("size",hrSize(extraDashes));
+  		return hr.html();
+  	}
+  }
+  
+  private String hrSize(int height){
+  	int hrSize = height + 1;
+  	return String.format("%d", hrSize);
+  }
+  ```
+
+- 在较高层级放置可配置数据：较高抽象层级的默认常量或配置值，不要放到较低层级的函数中。（常量放到类顶部而变量名大写）
+
+- 避免传递浏览：避免 a.getB().getC().doSomething()的代码，应该改为 myCollaborator.doSomething()
+
+**Java**
+
+- 通过使用通配符避免过长的导入清单：同名不同包的类需要指定名称导入。
+- 不要继承常量：常量放到静态常量类里。
+- 常量 VS 枚举：使用枚举代替常量，枚举能表达更多而且更灵活。
+
+**名称**
+
+- 采用描述性名称：确认名称具有描述性，比如 count、max（业务含义） 代替 i 、j、k。
+
+- 名称应与抽象层级相符：方法名称要体现抽象层级，比如 调制解调器的抽象层级的方法，
+   dial 是实现类的方法名称(电话拨号)
+
+  ```
+  public interface Modem{
+  	boolean dial(String phoneNumber);
+  	boolean disconnect;
+  }
+  ```
+
+  应改为：connect 更能体现层级
+
+  ```
+  public interface Modem{
+  	boolean connect(String connectionLocator);
+  	boolean disconnect;
+  }
+  ```
+
+- 尽可能使用标准命名法：如果使用装饰模式，类命名时加上 Decorator ，例如 AutoHangupModemDecorator。
+
+- 无歧义的名称：比如说 getData() 应该具体到业务场景 getTreeDataByColor
+
+- 为较大作用范围选用较长名称：下面简短的代码用变量 i ，n 刚好，rollCount 代替 i 反倒混乱
+
+  ```
+  private void rollMany(int n, int pins){
+  	fori (int i = 0,i < n; i ++){
+  		g.roll(pins);
+  	}
+  }
+  ```
+
+- 避免编码：不应在名称中包括类型或作用范围信息。比如 m_ 或者 f_ 完全无用。（redis常用前缀 业务属性： 比如 user: use_key）
+
+- 名称应该说明副作用：名称更好的应该是 createOrReturnOos 。
+
+  ```
+  public ObjectOutputStream getOos() throws IOException(){
+  	if(m_oos == null){
+  		m_oos = new ObjectOutputStream(m_socket.getOutputStream());
+  	}
+  	return m_oos;
+  }
+  ```
+
+**测试**
+
+- 测试不足：一套测试应该测到所有可能失败的东西。
+- 使用覆盖率工具：覆盖率工具能汇报测试策略中的缺口。
+- 别略过小测试：小测试易于编写，文档价值高于编写成本。
+- 被忽略的测试就是对不确定事物的疑问：可以使用注释掉的测试或者用 @Ignore 标记测测试来表达我们对于需求的疑问。用哪种方式取决于代码关联代码是否要编译。
+- 测试边界条件：算法在中间部分正确但边界判断错误的情形很常见。比如用 new Integer(200) == new Integer(200)
+- 全面测试相近的缺陷：趋势倾向于扎堆。某个函数中发现一个缺陷时，最好全面测试那个函数。
+- 测试失败的模式有启发性：根据测试用例失败的模式来诊断问题。
+- 测试覆盖率的模式有启发性：查看被或未被已通过的测试执行的代码，往往能发现失败的测试为何失败。
+- 测试应该快速：慢速的测试是不会被运行的测试。
+
+整洁代码并非遵循一套规则写就。专业性和技艺来自驱动规程的价值观。
+
 
 最后附上最新的阿里规范github 地址：
 
