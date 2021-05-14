@@ -188,4 +188,143 @@ synchronized 不仅保证原子性，还保证 内存可见性。
     读取 volatile 变量比 读取非 volatile 变量的开销略高。
     **加锁可以保证可见性和原子性；volatile 变量只能保证可见性。**
 - 发布和逸出：
+  
+- 安全构建的实践：不要让this引用在构造期间逸出。在构造函数中注册监听器或启动线程，使用私有构造函数和一个公共的工厂方法。
+  
+- 线程封闭：
+  类似JDBC连接池的Connection对象，线程总是从池中获得一个Connection对象，并且用它处理单一请求，最后归还。这种连接管理模式隐式地将Connection对象限制在处于请求处理期间的线程中。
+
+  - Ad-hoc 线程限制（未经设计的线程封闭行为）： 比如使用volatile关键字，外加读写在同一线程内。
+
+  - 栈限制：栈限制中，只能通过本地变量才能触及对象。
+
+  - ThreadLocal：线程与持有数值的对象关联，提供get和set方法。
+
+  - 不可变性：不可变对象永远是线程安全的。
+
+    - final：将所有的域声明为final型，除非它们是可变的。
+
+    - 使用volatile 发布不可变对象：使用可变的容器对象，必须加锁以确保原子性。使用不可变对象，不必担心其他线程修改对象状态，如果更新变量，会创建新的容器对象，不过在此之前任何线程都还和原先的容器打交道，仍然看到它处于一致的状态。(对应下面的代码 OneValueCache 和       VolatileCachedFactorizer)
+
+      ```
+      @Immutable
+      class OneValueCache{
+      	private final BigInteger lastNumber;
+      	private final BigInteger[] lastFactors;
+      	
+      	public OneValueCache(BigInteger i,BigInteger[] factors){
+      		lastNumber = i;
+      		lastFactors = Arrays.copyOf(factors,factors.length);
+      	}
+      	public BigInteger[] getFactors(BigInteger i) {
+      		if(lastNumber == null || !lastNumber.equals(i)){
+      			return null;
+      		}else{
+      			return Arrays.copyOf(lastFactors, lastFactors.length);
+      		}
+      	}
+      }
+      ```
+
+- 安全发布：
+
+  ```
+  @ThreadSafe
+  public class VolatileCachedFactorizer implements Servlet{
+  	private volatile OneValueCache cache = new OneValueCache(null, null);
+  	
+  	public void service(ServletRequest req, ServletResponse resp){
+  		BigInteger i = extractFromRequest(req);
+  		BigInteger[] factors = cache.getFactors(i);
+  		if (factors == null){
+  			facotrs = factors(i);
+  			cache = new OneValueCache(i, factors);
+  		}
+  		//
+  	}
+  }
+  ```
+
+  - 不正确发布：当好对象变坏时，代码如下：
+
+    ```
+    public class Holder {
+    	private int n;
+    	public Holder(int n){
+    		this.n = n;
+    	}
+    	public void assertSanity(){
+    		if(n != n){
+    			throw new AssertionError("This statement is false.");
+    		}
+    	}
+    }
+    ```
+
+    发布线程以外的任何线程都可以看到Holder域的过期值，因而看到的是一个null引用或者旧值。（反之线程同理），这种写法本身是不安全的。
+
+  - 不可变对象与初始化安全性：即使发布对象引用时没有使用同步，不可变对象仍然可以被安全地访问。
+
+    不可变对象可以在没有额外同步的情况下，安全地用于任意线程；甚至发布它们也不需要同步。
+
+  - 安全发布的模式：
+    发布对象的安全可见性。
+
+    - 通过静态初始化器初始化对象的引用；
+    - 将它的引用存储到volatile域或AtomicReference；
+    - 将它的引用存储到正确创建的对象的final域中；
+    - 或者将它的引用存储到由锁正确保护的域中。
+
+    线程安全容器。
+
+    ​	HashTable、SynchronizedMap、ConcurrentMap、Vector.CopyOnWriteArrayList、CopyOnWriteArraySet、syncronized-List、BlockingQueue或者ConcurrentListQueue
+
+  - 高效不可变对象（Effectively immutable objects）：任何线程都可以在没有额外的同步下安全地使用一个安全发布的高效不可变对象。比如正在维护一个Map存储每位用户的最近登录时间：
+
+    ```
+    public Map<String,Date> lastLogin = Collections.synchronizedMap(new HashMap<String, Date>)());
+    ```
+
+    访问Date值时不需要额外的同步。
+
+  - 可变对象：
+    不可变对象可以通过任意机制发布；
+    高效不可变对象必须要安全发布；
+    可变对象必须要安全发布，同时必须要线程安全或者被锁保护。
+
+  - 安全地共享对象：
+
+    共享策略：
+
+    - 线程限制：一个线程限制的对象，通过限制在线程中，而被线程独占，且只能被占有它的线程修改。
+
+    - 共享只读（shared read-only）：一个共享的只读对象，在没有额外同步的情况下，可以被多个线程并发访问，但是任何线程都不能修改它。共享只读对象包括可变对河与高效不可变对象。
+    - 共享线程安全(shared thread-safe) ：一个线程安全的对象在内部进行同步，所以其他线程无须额外同步，就可以通过公共接口随意访问它。
+    - 被守护的(Guarded) ：一个被守护的对象只能通过特定的锁来访问。被守护的对象包括那些被线程安全对象封装的对象，和已知被待定的锁保护起来的已发布的对象。
+
+## 第四章 组合对象
+
+- 设计线程安全的类：
+  确定对象状态由哪些变量构成；
+  确定限制状态变量的不变约束；
+  制定一个管理并发访问对象状态的策略。
+
+  ```
+  @ThreadSafe
+  public final class Counter {
+  	@GuradedBy("this") private long value = 0;
+  	
+  	public synchronized long getValue(){
+  		return value;
+  	}
+  	public synchronized long increment(){
+  		//...
+  		return ++value;
+  	}
+  }
+  ```
+
+  同步策略定义对象如何协调对其状态访问，并且不会违反它的不变约束或后验条件。
+
+  - 收集同步需求：
 
