@@ -326,5 +326,39 @@ synchronized 不仅保证原子性，还保证 内存可见性。
 
   同步策略定义对象如何协调对其状态访问，并且不会违反它的不变约束或后验条件。
 
-  - 收集同步需求：
+  - 收集同步需求：对象与变量拥有一个状态空间，即它们可能处于的状态范围。状态空间越小，越容易判断它们。尽量使用final类型的域，可以简化对对象可能状态进行分析。
+  
+    比如 Long的区间是 Long.MIN_VALUE 到 Long.MAX_VALUE，后验条件会指出某种状态转换是非法的。比如当前状态17，下一个合法状态是18。
+    **不理解对象的不变约束和后验条件，就不能保证线程安全性。要约束状态变量的有效值或者状态转换，就需要原子性与封装性**。
+  
+  - 状态依赖的操作
+    和后验条件对应的是先验条件，比如移除队列中的元素，队列必须是“非空”状态。
+  
+  - 状态所有权
+    创建的对象归属谁所有，所有权意味着控制权，一旦将引用发布到一个可变对象上，就不再拥有独占的控制权，充其量只可能有"共享控制权"。容器类通常表现出一种"所有权分离"的形式。以 servlet中的 ServletContext 为例。 ServletContext 为 Servlet 提供了类似于 Map的对象容器服务。ServletContext可以调用 setAttribute 和 getAttribute，由于被多线程访问，ServletContext 必须是线程安全的，而 setAttribute 和 getAttribute 不必是同步的。
+  
+- 实例限制
+  **将数据封装在对象内部，把对数据的访问限制在对象的方法上**，更易确保线程在访问数据时总能获得正确的锁。比如 私有的类变量、本地变量或者线程内部的变量。
+  比如 PersonSet中的 mySet 只能通过 addPerson 和 containsPerson 访问，而这两个方法都加了锁。
 
+  ```
+  @ThreadSafe
+  puclic class PersonSet{
+  	@GuardedBy("this")
+  	private final Set<Person> mySet = new HashSet<Person>();
+  	
+  	public synchronized void addPerson(Person p){
+  		mySet.add(p);
+  	}
+  	
+  	public synchronized boolean containsPerson(Person p){
+  		return mySet.contains(p);
+  	}
+  }
+  ```
+
+  使用线程安全的类，分析安全性时更容易。
+
+  - 监视器模式
+    Java monitor pattern，遵循Java监视器模式的对象封装了所有的可变状态，并由对象自己的内部锁保护。私有锁对象可以封装锁，客户代码无法得到它。共有锁允许客户代码涉足它的同步策略，不正确地使用可能引起活跃度问题。要验证是否正确使用，需要检查整个程序，而不是单个类。
+  - 
