@@ -2,7 +2,7 @@
 
 大家好，我是烤鸭：
 
-​	今天看下rocketmq。
+&nbsp;&nbsp;&nbsp;&nbsp;今天看下rocketmq。
 
 ## 项目架构
 
@@ -131,7 +131,33 @@ ConsumeMessageThread_2 Receive_1 New Messages: [MessageExt [brokerName=broker-a,
 
 当发送的时候 store目录下会生成 commitLog 目录(消息内容)和consumequeue目录(存的是topic和queueId)
 
-默认上来生成两个文件，2个G。
+commitLog目录 默认上来生成两个文件，2个G。
 
 ![3](.\9.png)
+
+consumequeue目录，一级子目录是topic，二级子目录是queueId
+
+![3](.\10.png)
+
+## mq 控制台
+
+rocketmq-console 在另一个仓库，地址：
+
+https://github.com/apache/rocketmq-externals/tree/master/rocketmq-console
+
+启动成功，画面还是比较清新的：
+
+![3](.\11.png)
+
+模拟发送100条，可以看到每个broker的数量：
+
+![3](.\12.png)
+
+console功能还是有很多可以再开发的地方，官方基本不维护了，需要的可能得二次开发了。
+
+像我们就开发了类似报表、报警、监控等一些功能，还是比较方便的。
+
+
+
+
 

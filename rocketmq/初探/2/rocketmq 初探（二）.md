@@ -2,7 +2,7 @@
 
 大家好，我是烤鸭：
 
-​	上一篇简单介绍和rocketmq，这一篇看下源码。
+&nbsp;&nbsp;&nbsp;&nbsp;上一篇简单介绍和rocketmq，这一篇看下源码之注册中心。
 
 
 
@@ -179,9 +179,11 @@ public void processMessageReceived(ChannelHandlerContext ctx, RemotingCommand ms
     if (cmd != null) {
         switch (cmd.getType()) {
             case REQUEST_COMMAND:
+            	// 接收请求并处理
                 processRequestCommand(ctx, cmd);
                 break;
             case RESPONSE_COMMAND:
+            	// 接收响应,维护responseTable(注册中心用不到)
                 processResponseCommand(ctx, cmd);
                 break;
             default:
@@ -192,4 +194,207 @@ public void processMessageReceived(ChannelHandlerContext ctx, RemotingCommand ms
 ```
 
 由于注册中心没有发起 request，看下 processRequestCommand(接收request)
+
+```
+/**
+ * Process incoming request command issued by remote peer.
+ *
+ * @param ctx channel handler context.
+ * @param cmd request command.
+ */
+public void processRequestCommand(final ChannelHandlerContext ctx, final RemotingCommand cmd) {
+	// request的code在 RequestCode 类维护,包括 发送、拉取等等
+    final Pair<NettyRequestProcessor, ExecutorService> matched = this.processorTable.get(cmd.getCode());
+    final Pair<NettyRequestProcessor, ExecutorService> pair = null == matched ? this.defaultRequestProcessor : matched;
+    // 自增计数
+    final int opaque = cmd.getOpaque();
+
+    if (pair != null) {
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                	// ACL鉴权 (client端和broker使用)
+                    doBeforeRpcHooks(RemotingHelper.parseChannelRemoteAddr(ctx.channel()), cmd);
+                    final RemotingResponseCallback callback = new RemotingResponseCallback() {
+                        @Override
+                        public void callback(RemotingCommand response) {
+                            doAfterRpcHooks(RemotingHelper.parseChannelRemoteAddr(ctx.channel()), cmd, response);
+                            if (!cmd.isOnewayRPC()) {
+                                if (response != null) {
+                                    response.setOpaque(opaque);
+                                    response.markResponseType();
+                                    try {
+                                        ctx.writeAndFlush(response);
+                                    } catch (Throwable e) {
+                                        log.error("process request over, but response failed", e);
+                                        log.error(cmd.toString());
+                                        log.error(response.toString());
+                                    }
+                                } else {
+                                }
+                            }
+                        }
+                    };
+                    // 异步 or 同步
+                    if (pair.getObject1() instanceof AsyncNettyRequestProcessor) {
+                        AsyncNettyRequestProcessor processor = (AsyncNettyRequestProcessor)pair.getObject1();
+                        processor.asyncProcessRequest(ctx, cmd, callback);
+                    } else {
+                        NettyRequestProcessor processor = pair.getObject1();
+                        // 比较重要的地方,单独分析
+                        RemotingCommand response = processor.processRequest(ctx, cmd);
+                        callback.callback(response);
+                    }
+                } catch (Throwable e) {
+                    log.error("process request exception", e);
+                    log.error(cmd.toString());
+
+                    if (!cmd.isOnewayRPC()) {
+                        final RemotingCommand response = RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_ERROR,
+                            RemotingHelper.exceptionSimpleDesc(e));
+                        response.setOpaque(opaque);
+                        ctx.writeAndFlush(response);
+                    }
+                }
+            }
+        };
+		// 系统繁忙,注册中心不会提示这个(broker 刷盘不及时会报这个)
+        if (pair.getObject1().rejectRequest()) {
+            final RemotingCommand response = RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_BUSY,
+                "[REJECTREQUEST]system busy, start flow control for a while");
+            response.setOpaque(opaque);
+            ctx.writeAndFlush(response);
+            return;
+        }
+
+        try {
+            final RequestTask requestTask = new RequestTask(run, ctx.channel(), cmd);
+            pair.getObject2().submit(requestTask);
+        } catch (RejectedExecutionException e) {
+        	// 避免日志打印的太多
+            if ((System.currentTimeMillis() % 10000) == 0) {
+                log.warn(RemotingHelper.parseChannelRemoteAddr(ctx.channel())
+                    + ", too many requests and system thread pool busy, RejectedExecutionException "
+                    + pair.getObject2().toString()
+                    + " request code: " + cmd.getCode());
+            }
+			// 不是单向请求(onewayRPC,线程池满的话,直接返回系统繁忙)
+            if (!cmd.isOnewayRPC()) {
+                final RemotingCommand response = RemotingCommand.createResponseCommand(RemotingSysResponseCode.SYSTEM_BUSY,
+                    "[OVERLOAD]system busy, start flow control for a while");
+                response.setOpaque(opaque);
+                ctx.writeAndFlush(response);
+            }
+        }
+    } else {
+        String error = " request type " + cmd.getCode() + " not supported";
+        final RemotingCommand response =
+            RemotingCommand.createResponseCommand(RemotingSysResponseCode.REQUEST_CODE_NOT_SUPPORTED, error);
+        response.setOpaque(opaque);
+        ctx.writeAndFlush(response);
+        log.error(RemotingHelper.parseChannelRemoteAddr(ctx.channel()) + error);
+    }
+}
+```
+
+我们先看一下 NettyRequestProcessor.processRequest  实现
+
+![1](.\1.png)
+
+ DefaultRequestProcessor.processRequest 
+
+其实看名字就能看出来 注册中心的操作了
+
+```
+public RemotingCommand processRequest(ChannelHandlerContext ctx,
+    RemotingCommand request) throws RemotingCommandException {
+
+    if (ctx != null) {
+        log.debug("receive request, {} {} {}",
+            request.getCode(),
+            RemotingHelper.parseChannelRemoteAddr(ctx.channel()),
+            request);
+    }
+
+
+    switch (request.getCode()) {
+        case RequestCode.PUT_KV_CONFIG:
+        	// admin调用,配置添加到 configTable,定期打印
+            return this.putKVConfig(ctx, request);
+        case RequestCode.GET_KV_CONFIG:
+        	// admin调用,获取配置
+            return this.getKVConfig(ctx, request);
+        case RequestCode.DELETE_KV_CONFIG:
+        	// admin调用,删除配置
+            return this.deleteKVConfig(ctx, request);
+        case RequestCode.QUERY_DATA_VERSION:
+        	// broker 获取topic配置
+            return queryBrokerTopicConfig(ctx, request);
+        case RequestCode.REGISTER_BROKER:
+        	// 注册broker,版本不同处理逻辑有些不一样(topic配置信息封装不同)
+            Version brokerVersion = MQVersion.value2Version(request.getVersion());
+            if (brokerVersion.ordinal() >= MQVersion.Version.V3_0_11.ordinal()) {
+                return this.registerBrokerWithFilterServer(ctx, request);
+            } else {
+                return this.registerBroker(ctx, request);
+            }
+        case RequestCode.UNREGISTER_BROKER:
+        	// 下线 broker
+            return this.unregisterBroker(ctx, request);
+        case RequestCode.GET_ROUTEINFO_BY_TOPIC:
+        	// 根据topic获取路由信息，获取的key是 ORDER_TOPIC_CONFIG+topicid
+            return this.getRouteInfoByTopic(ctx, request);
+        case RequestCode.GET_BROKER_CLUSTER_INFO:
+        	// 获取broker 集群信息
+            return this.getBrokerClusterInfo(ctx, request);
+        case RequestCode.WIPE_WRITE_PERM_OF_BROKER:
+        	// 废除broker的写入权限
+            return this.wipeWritePermOfBroker(ctx, request);
+        case RequestCode.GET_ALL_TOPIC_LIST_FROM_NAMESERVER:
+        	// 获取所有的topic
+            return getAllTopicListFromNameserver(ctx, request);
+        case RequestCode.DELETE_TOPIC_IN_NAMESRV:
+        	// 删除topic
+            return deleteTopicInNamesrv(ctx, request);
+        case RequestCode.GET_KVLIST_BY_NAMESPACE:
+        	// 根据namespace获取配置
+            return this.getKVListByNamespace(ctx, request);
+        case RequestCode.GET_TOPICS_BY_CLUSTER:
+        	// 根据cluster下的broker获取topic
+            return this.getTopicsByCluster(ctx, request);
+        case RequestCode.GET_SYSTEM_TOPIC_LIST_FROM_NS:
+        	// 获取cluster、broker和关联信息
+            return this.getSystemTopicListFromNs(ctx, request);
+        case RequestCode.GET_UNIT_TOPIC_LIST:
+        	// 设置unit_mode true && 非重试的时候,这个配置好像没用啊(https://github.com/apache/rocketmq/issues/639)
+            return this.getUnitTopicList(ctx, request);
+        case RequestCode.GET_HAS_UNIT_SUB_TOPIC_LIST:
+        	// 设置unit_mode true(校验消息和心跳的时候),获取topic
+            return this.getHasUnitSubTopicList(ctx, request);
+        case RequestCode.GET_HAS_UNIT_SUB_UNUNIT_TOPIC_LIST:
+        	// !getUnitTopicList && getHasUnitSubTopicList
+            return this.getHasUnitSubUnUnitTopicList(ctx, request);
+        case RequestCode.UPDATE_NAMESRV_CONFIG:
+        	// 更新注册中心配置
+            return this.updateConfig(ctx, request);
+        case RequestCode.GET_NAMESRV_CONFIG:
+        	// 获取注册中心配置
+            return this.getConfig(ctx, request);
+        default:
+            break;
+    }
+    return null;
+}
+```
+
+## 小结 
+
+注册中心的作用：
+
+存了 cluster、broker、topic的信息。
+
+提供了一些接口，可以broker注册和下线，修改配置等。
+
+检测和维护broker是否活跃。
 
