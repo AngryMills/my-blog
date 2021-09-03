@@ -2,7 +2,7 @@
 
 大家好，我是烤鸭：
 
-&nbsp;&nbsp;&nbsp;&nbsp;上一篇简单介绍和rocketmq，这一篇看下源码之注册中心。
+&nbsp;&nbsp;&nbsp;&nbsp;上一篇简单介绍和rocketmq，这一篇看下源码之注册中心。基于 rocketmq 4.9 版本。
 
 
 

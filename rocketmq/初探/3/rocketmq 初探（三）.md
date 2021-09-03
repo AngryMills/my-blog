@@ -2,7 +2,7 @@
 
 大家好，我是烤鸭：
 
-&nbsp;&nbsp;&nbsp;&nbsp;上一篇介绍了注册中心，这一篇看下broker。
+&nbsp;&nbsp;&nbsp;&nbsp;上一篇介绍了注册中心，这一篇看下broker。基于 rocketmq 4.9 版本。
 
 
 
@@ -55,7 +55,7 @@ public static BrokerController createBrokerController(String[] args) {
             messageStoreConfig);
         // remember all configs to prevent discard
         controller.getConfiguration().registerConfig(properties);
-		// 初始化,一会看
+		// 初始化
         boolean initResult = controller.initialize();
         if (!initResult) {
             controller.shutdown();
@@ -95,12 +95,13 @@ BrokerController.initialize()
 
 ```
 public boolean initialize() throws CloneNotSupportedException {
+	// 加载本地配置文件(topic,consumerOffset等信息),加载不到加载 .bak文件
     boolean result = this.topicConfigManager.load();
 
     result = result && this.consumerOffsetManager.load();
     result = result && this.subscriptionGroupManager.load();
     result = result && this.consumerFilterManager.load();
-
+	// 初始化 messageStore(持久化)
     if (result) {
         try {
             this.messageStore =
@@ -120,11 +121,12 @@ public boolean initialize() throws CloneNotSupportedException {
             log.error("Failed to initialize", e);
         }
     }
-
+	// commitlog、consumer和topic关系、索引恢复(临时文件存在的话)
     result = result && this.messageStore.load();
 
     if (result) {
         this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.clientHousekeepingService);
+        // netty 配置
         NettyServerConfig fastConfig = (NettyServerConfig) this.nettyServerConfig.clone();
         fastConfig.setListenPort(nettyServerConfig.getListenPort() - 2);
         this.fastRemotingServer = new NettyRemotingServer(fastConfig, this.clientHousekeepingService);
@@ -135,7 +137,7 @@ public boolean initialize() throws CloneNotSupportedException {
             TimeUnit.MILLISECONDS,
             this.sendThreadPoolQueue,
             new ThreadFactoryImpl("SendMessageThread_"));
-
+		// 不同的线程池，注册到对应的processor
         this.pullMessageExecutor = new BrokerFixedThreadPoolExecutor(
             this.brokerConfig.getPullMessageThreadPoolNums(),
             this.brokerConfig.getPullMessageThreadPoolNums(),
@@ -143,59 +145,13 @@ public boolean initialize() throws CloneNotSupportedException {
             TimeUnit.MILLISECONDS,
             this.pullThreadPoolQueue,
             new ThreadFactoryImpl("PullMessageThread_"));
-
-        this.replyMessageExecutor = new BrokerFixedThreadPoolExecutor(
-            this.brokerConfig.getProcessReplyMessageThreadPoolNums(),
-            this.brokerConfig.getProcessReplyMessageThreadPoolNums(),
-            1000 * 60,
-            TimeUnit.MILLISECONDS,
-            this.replyThreadPoolQueue,
-            new ThreadFactoryImpl("ProcessReplyMessageThread_"));
-
-        this.queryMessageExecutor = new BrokerFixedThreadPoolExecutor(
-            this.brokerConfig.getQueryMessageThreadPoolNums(),
-            this.brokerConfig.getQueryMessageThreadPoolNums(),
-            1000 * 60,
-            TimeUnit.MILLISECONDS,
-            this.queryThreadPoolQueue,
-            new ThreadFactoryImpl("QueryMessageThread_"));
-
-        this.adminBrokerExecutor =
-            Executors.newFixedThreadPool(this.brokerConfig.getAdminBrokerThreadPoolNums(), new ThreadFactoryImpl(
-                "AdminBrokerThread_"));
-
-        this.clientManageExecutor = new ThreadPoolExecutor(
-            this.brokerConfig.getClientManageThreadPoolNums(),
-            this.brokerConfig.getClientManageThreadPoolNums(),
-            1000 * 60,
-            TimeUnit.MILLISECONDS,
-            this.clientManagerThreadPoolQueue,
-            new ThreadFactoryImpl("ClientManageThread_"));
-
-        this.heartbeatExecutor = new BrokerFixedThreadPoolExecutor(
-            this.brokerConfig.getHeartbeatThreadPoolNums(),
-            this.brokerConfig.getHeartbeatThreadPoolNums(),
-            1000 * 60,
-            TimeUnit.MILLISECONDS,
-            this.heartbeatThreadPoolQueue,
-            new ThreadFactoryImpl("HeartbeatThread_", true));
-
-        this.endTransactionExecutor = new BrokerFixedThreadPoolExecutor(
-            this.brokerConfig.getEndTransactionThreadPoolNums(),
-            this.brokerConfig.getEndTransactionThreadPoolNums(),
-            1000 * 60,
-            TimeUnit.MILLISECONDS,
-            this.endTransactionThreadPoolQueue,
-            new ThreadFactoryImpl("EndTransactionThread_"));
-
-        this.consumerManageExecutor =
-            Executors.newFixedThreadPool(this.brokerConfig.getConsumerManageThreadPoolNums(), new ThreadFactoryImpl(
-                "ConsumerManageThread_"));
-
+        // ...
+		// 线程池注册到processor,后续仔细说下
         this.registerProcessor();
 
         final long initialDelay = UtilAll.computeNextMorningTimeMillis() - System.currentTimeMillis();
         final long period = 1000 * 60 * 60 * 24;
+        // 延迟1天,每天记录昨天存取的消息数量
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -206,7 +162,7 @@ public boolean initialize() throws CloneNotSupportedException {
                 }
             }
         }, initialDelay, period, TimeUnit.MILLISECONDS);
-
+		// 每隔5s检查是否更新consumer和offset数据
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -217,7 +173,7 @@ public boolean initialize() throws CloneNotSupportedException {
                 }
             }
         }, 1000 * 10, this.brokerConfig.getFlushConsumerOffsetInterval(), TimeUnit.MILLISECONDS);
-
+		// 每隔10s检查是否更新consumer过滤规则数据
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -228,7 +184,7 @@ public boolean initialize() throws CloneNotSupportedException {
                 }
             }
         }, 1000 * 10, 1000 * 10, TimeUnit.MILLISECONDS);
-
+		// 每隔3分钟检查,开启consumer消费过慢后移除该consumer(默认关闭)
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -239,7 +195,7 @@ public boolean initialize() throws CloneNotSupportedException {
                 }
             }
         }, 3, 3, TimeUnit.MINUTES);
-
+		// 每秒打印send\pull\query\transaction队列大小和的最慢的消费耗时
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -250,7 +206,7 @@ public boolean initialize() throws CloneNotSupportedException {
                 }
             }
         }, 10, 1, TimeUnit.SECONDS);
-
+		// 主broker同步从broker的时候重试
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -262,7 +218,7 @@ public boolean initialize() throws CloneNotSupportedException {
                 }
             }
         }, 1000 * 10, 1000 * 60, TimeUnit.MILLISECONDS);
-
+		// 没配置注册中心的话,会每隔2分钟去拉取(url为默认读取系统变量 rocketmq.namesrv.domain:8080/rocketmq)
         if (this.brokerConfig.getNamesrvAddr() != null) {
             this.brokerOuterAPI.updateNameServerAddressList(this.brokerConfig.getNamesrvAddr());
             log.info("Set user specified name server address: {}", this.brokerConfig.getNamesrvAddr());
@@ -279,7 +235,7 @@ public boolean initialize() throws CloneNotSupportedException {
                 }
             }, 1000 * 10, 1000 * 60 * 2, TimeUnit.MILLISECONDS);
         }
-
+		// DLeger模式,从节点不需要定期更新 HA主节点地址
         if (!messageStoreConfig.isEnableDLegerCommitLog()) {
             if (BrokerRole.SLAVE == this.messageStoreConfig.getBrokerRole()) {
                 if (this.messageStoreConfig.getHaMasterAddress() != null && this.messageStoreConfig.getHaMasterAddress().length() >= 6) {
@@ -289,6 +245,7 @@ public boolean initialize() throws CloneNotSupportedException {
                     this.updateMasterHAServerAddrPeriodically = true;
                 }
             } else {
+            	// 每分钟打印主节点和从节点的offset的不同
                 this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
                     @Override
                     public void run() {
@@ -301,7 +258,7 @@ public boolean initialize() throws CloneNotSupportedException {
                 }, 1000 * 10, 1000 * 60, TimeUnit.MILLISECONDS);
             }
         }
-
+		// tls模式需要证书建立ssl
         if (TlsSystemConfig.tlsMode != TlsMode.DISABLED) {
             // Register a listener to reload SslContext
             try {
@@ -342,8 +299,11 @@ public boolean initialize() throws CloneNotSupportedException {
                 log.warn("FileWatchService created error, can't load the certificate dynamically");
             }
         }
+        // 事务初始化
         initialTransaction();
+        // acl鉴权初始化
         initialAcl();
+        // rpc钩子初始化(acl和匿名的)
         initialRpcHooks();
     }
     return result;
@@ -420,11 +380,27 @@ public void start() throws Exception {
 
 ## 小结 
 
-注册中心的作用：
+这篇主要是介绍了broker的init和start。
 
-存了 cluster、broker、topic的信息。
+DLegerCommit开启模式(替代原有的commitLog，可以直接读取CommitLog的API)
 
-提供了一些接口，可以broker注册和下线，修改配置等。
+初始化：
 
-检测和维护broker是否活跃。
+- 消费持久化 messageStore
 
+- commitlog、consumer和topic关系、索引恢复(临时文件存在的话)
+- netty配置(remotingServer 和 fastRemotingServer)
+- processor(PullMessage、SendMessage 等)
+- 定时器(记录消费总量、更新consumer和offset数据 等)
+- acl鉴权、事务、rpchook
+
+启动：
+
+- 消息持久化 messageStore
+- netty server启动(remotingServer 和 fastRemotingServer)
+- tls模式检测证书变化
+- pullRequestHold模式下，启动监听消息
+- 每10s扫描 producer、consumer、broker 的在线情况
+- 启用DLedger,slave 每隔10s更新配置，broker注册到nameserver
+- 随机 30-60s,定时 broker注册到nameserver
+- 快速失败,如果是刷盘过慢,返回 system busy，清理队列(发送、拉取、心跳、请求)
