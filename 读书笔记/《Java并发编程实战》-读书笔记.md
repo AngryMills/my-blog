@@ -491,9 +491,73 @@ puclic class PersonSet{
 
   - 4.5.1 含糊不清的文档
 
+    比如 Servlet 规范没有建议任何用来协调对这些共享属性并发访问的机制。所以容器代替Web Application所存储的这些对象应该是线程安全的或者是搞笑不可变的。(**容器不可能知道你的锁协议，需要自己保证这些对象是线程安全的。**)
+
+    再比如 DataSource的JDBC Connection，如果一个获得了JDBC Connection 的及活动跨越了多个线程，那么必须确保利用同步正确地保护到 Connection的访问。
+
     
 
-  - 
 
-- 
+## 第五章 构建块
+
+在实践中，委托是创建线程安全类最有效的策略之一：只需要用已有的线程安全类来管理所有状态即可。
+
+### 5.1 同步容器
+
+同步包装类，Collections.synchronizedXxx 工厂方法创建。
+
+#### 5.1.1 同步容器之中出现的问题
+
+同步容器都是线程安全的。
+
+```
+public static Object getLast(Vector list) {
+	int lastIndex = list.size() - 1;
+	return list.get(lastIndex);
+}
+public static void deleteLast(Vector list) {
+	int lastIndex = list.size() - 1;
+	list.remove(lastIndex);
+}
+```
+
+不同线程调用 size和get/remove时可能出现 ArrayIndexOutOfBoundsException，对list加锁可以避免这个问题，但会增加性能开销。
+
+```
+public static Object getLast(Vector list) {
+	sychroized(list) {
+		int lastIndex = list.size() - 1;
+		return list.get(lastIndex);
+	}
+}
+public static void deleteLast(Vector list) {
+	sychroized(list) {
+		int lastIndex = list.size() - 1;
+		list.remove(lastIndex);	
+	}
+
+}
+```
+
+#### 5.1.2 迭代器和ConcurrentModificationException
+
+无论单线程还是多线程，操作容器，都可能出现ConcurrentModificationException，这是迭代器 Iterator 对修改检查抛出的异常。
+
+对容器加锁可以避免这个问题，但会影响性能，替代方法是复制容器，线程隔离操作安全，会有明显的性能开销。
+
+#### 5.1.3 隐藏迭代器
+
+容器本身作为一个元素，或者作为另一容器的key时，containsAll、removeAll、retainAll方法以及把容器作为参数的构造函数，都会对容器进行迭代。这些对迭代的间接调用，都可能引起 ConcurrentModificationException。
+
+### 5.2 并发容器
+
+JUC的并发容器和队列。
+
+#### 5.2.1 ConcurrentHashMap
+
+
+
+
+
+
 
