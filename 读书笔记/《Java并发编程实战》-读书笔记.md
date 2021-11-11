@@ -555,6 +555,80 @@ JUC的并发容器和队列。
 
 #### 5.2.1 ConcurrentHashMap
 
+#### 5.2.2 Map附加的原子操作
+
+#### 5.2.2 CopyOnWriteArrayList
+
+写入时复制，为了保证数组内容的可见性（不会考虑后续的修改）
+
+查询频率远高于修改频率时，适合使用 CopyOnWriteArrayList
+
+### 5.3 阻塞队列和生产者-消费者模式
+
+生产者-消费者模式可以把生产者和消费者的代码解耦合，但还是通过共享工作队列耦合在一起。
+
+设计初期就使用阻塞队列建立对资源的管理。
+
+LinkedBlockingQueue和ArrayBlockingQueue是FIFO队列，PriorityBlockingQueue是一个按优先级排序的队列(可以使用Comparator进行排序)。
+
+#### 5.3.3 双端队列和窃取工作
+
+双端队列和窃取工作(work stealing)模式。一个生产消费者设计中，所有的消费者共享一个工作队列；在窃取工作的设计中，每一个消费者都有一个自己的双端队列。如果一个消费完，可以偷取其他消费者的双端队列中的末尾任务。
+
+### 5.4 阻断和可中断的方法
+
+关于 InterruptedException的两种处理方式：
+
+传递 InterruptedException，抛出给调用者。
+
+恢复中断。捕获 InterruptedException ，并且在当前线程中调用通过 interrupt 中断中恢复。
+
+恢复中断状态，避免掩盖中断：
+
+```
+public class TaskRunnable implements Runnable{
+	BlockingQueue<Task> queue;
+	//...
+	public void run(){
+		try{
+			processTask(queue.take());
+		} catch (InterruptedException e){
+			//恢复中断状态
+			Thread.currentThread().interrupt();
+		}
+	}
+}
+```
+
+### 5.5 Synchronizer
+
+Synchronizer 是一个对象，包含 信号量(semaphore)、关卡(barrier)以及闭锁(latch)。
+
+#### 5.5.1 闭锁
+
+闭锁(latch)是一种Synchronizer，可以延迟线程的进度直到线程到达终止状态。闭锁可以确保特定活动直到其他活动完成后才发生。
+
+- 资源初始化，使用二元闭锁可以保证 先后加载。
+- 服务依赖，使用二元闭锁可以保证 服务的先后启动。
+
+CountDownLatch 是一个灵活的闭锁实现。countDown 方法对计数器做减操作，表示一个事件已经发生了，而 await 方法等待计数器打到零，此时所有需要等待的事件都已发生。如果计数器入口值为非零，await会一直阻塞到计数器为零，或者等待线程中断以及超时。(**await一定要设置超时时间**)
+
+ #### 5.5.2 FutureTask
+
+Future.get() 可以立刻得到返回结果。通常可以把多个FutureTask放到一个list，循环 get()
+
+#### 5.5.3 信号量
+
+计数信号量(Counting semaphore)用来控制能够同时访问特定资源的活动的数量，或者同时执行某一给定操作的数量。
+
+一个Semaphore管理一个有效的许可集(permit)，活动获取许可，使用之后释放。如果没有可用的许可，acquire会阻塞。
+
+release方法向信号量返回一个许可。信号量的退化形式：二元信号量(互斥)。
+
+比如可以用信号量维护连接池，池为空的时候阻塞，反之解除。
+
+#### 5.5.4 关卡
+
 
 
 
